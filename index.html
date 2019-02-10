@@ -62,6 +62,62 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-自定义YUM源" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/02/09/自定义YUM源/" class="article-date">
+  <time datetime="2019-02-09T09:42:02.000Z" itemprop="datePublished">2019-02-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/09/自定义YUM源/">自定义YUM源</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Linux :  Oracle Enterprise Linux 5.5</p>
+<h2 id="设置Oracle-YUM源"><a href="#设置Oracle-YUM源" class="headerlink" title="设置Oracle YUM源"></a>设置Oracle YUM源</h2><h3 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h3><p><a href="http://public-yum.oracle.com/getting-started.html" target="_blank" rel="noopener">http://public-yum.oracle.com/getting-started.html</a></p>
+<h3 id="配置Oracle-YUM-Repository"><a href="#配置Oracle-YUM-Repository" class="headerlink" title="配置Oracle YUM Repository"></a>配置Oracle YUM Repository</h3><p>下载oracle yum repository文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/yum.repos.d</span><br><span class="line">wget https://yum.oracle.com/public-yum-el5.repo</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ul>
+<li>如果下载因为SSL出错，可以通过浏览器把<a href="https://yum.oracle.com/public-yum-el5.repo下载下来放到/etc/yum.repos.d文件夹下" target="_blank" rel="noopener">https://yum.oracle.com/public-yum-el5.repo下载下来放到/etc/yum.repos.d文件夹下</a></li>
+<li>Oracle Linux自带oracle repository，无需设置</li>
+</ul>
+</blockquote>
+<h3 id="重做cache"><a href="#重做cache" class="headerlink" title="重做cache"></a>重做cache</h3><p>cache也可以不做，耗时较长<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置ISO作为本地YUM源"><a href="#配置ISO作为本地YUM源" class="headerlink" title="配置ISO作为本地YUM源"></a>配置ISO作为本地YUM源</h2><p>由于Oracle Linux自动生成的挂载点/media/Enterprise Linux  dvd  20100405中间有空格不是很方便，将cdrom挂载到/mnt/cdrom<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /mnt/cdrom</span><br><span class="line">mount /dev/cdrom /mnt/cdrom</span><br></pre></td></tr></table></figure></p>
+<p>在/etc/yum.repos.d中新建一个新的repository</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@rac1 yum.repos.d]<span class="comment"># vi dvd.repo </span></span><br><span class="line">[dvd]</span><br><span class="line">name=iso dvd</span><br><span class="line">baseurl=file:///mnt/cdrom</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/02/09/自定义YUM源/" data-id="cjryqwm3i0000k0wohpquyzer" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/YUM/">YUM</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-基于GitHub-Page-Hexo的Blog" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/02/07/基于GitHub-Page-Hexo的Blog/" class="article-date">
@@ -126,7 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/02/07/基于GitHub-Page-Hexo的Blog/" data-id="cjrtjwb2800008owo6zfn300d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/02/07/基于GitHub-Page-Hexo的Blog/" data-id="cjryqwm4b0007k0wod0aljlha" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GitHub-Page/">GitHub Page</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li></ul>
@@ -148,7 +204,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li></ul>
     </div>
   </div>
 
@@ -158,7 +214,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub-Page/">GitHub Page</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub-Page/">GitHub Page</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YUM/">YUM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a></li></ul>
     </div>
   </div>
 
@@ -168,7 +224,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/GitHub-Page/" style="font-size: 10px;">GitHub Page</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a>
+      <a href="/tags/GitHub/" style="font-size: 10px;">GitHub</a> <a href="/tags/GitHub-Page/" style="font-size: 10px;">GitHub Page</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/YUM/" style="font-size: 10px;">YUM</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a>
     </div>
   </div>
 
@@ -188,6 +244,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/02/09/自定义YUM源/">自定义YUM源</a>
+          </li>
         
           <li>
             <a href="/2019/02/07/基于GitHub-Page-Hexo的Blog/">基于GitHub Page+Hexo的Blog</a>
