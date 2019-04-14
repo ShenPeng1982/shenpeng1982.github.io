@@ -228,8 +228,10 @@
 <ol>
 <li>关闭KDUMP</li>
 <li>关闭SECURITY POLICY</li>
-<li>软件包的选择<br><img src="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/./ol75_ora192-2019-04-14-18-05-34.png" alt="Alt text"></li>
-<li>关闭SELINUX<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
+<li><p>软件包的选择<br><img src="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/./ol75_ora192-2019-04-14-18-05-34.png" alt="Alt text"></p>
+</li>
+<li><p>关闭SELINUX</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <p>将SELINUX置为permissive<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=permissive</span><br></pre></td></tr></table></figure></p>
