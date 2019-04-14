@@ -8,12 +8,12 @@
   
   
   
-  <title>sudo时无需输入用户密码 | Shen Peng&#39;s Blog</title>
+  <title>Oracle 19c Installation on Oracle Linux 7.5 | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Linux,Linux,Oracle Linux 5.5,sudo,">
+    <meta name="keywords" content="Oracle,Oracle,Oracle 19c,Oracle Linux,">
   
 
   <script>
@@ -197,7 +197,7 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>sudo时无需输入用户密码</span>
+    <span>Oracle 19c Installation on Oracle Linux 7.5</span>
   </h1>
   <div class="article-top-meta">
     <span>
@@ -207,14 +207,14 @@
     
       <span>
         分类 : 
-          <a href="/categories/Linux/">
-            Linux
+          <a href="/categories/Oracle/">
+            Oracle
           </a>
       </span>
     
     
       <span>
-        浏览 : <span class="article-timer" data-identity="sudo时无需输入用户密码"></span>
+        浏览 : <span class="article-timer" data-identity="Oracle-19c-Installation-on-Oracle-Linux-7-5"></span>
       </span>
     
   </div>
@@ -223,12 +223,41 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>本文基于Oracle Linux 5.5搭建</p>
-<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>实验环境的oracle用户没有root权限，但通过sudo可以执行大部分的root命令，并且不用每次在sudo时还需要输入oracle密码</p>
-<h2 id="设置-etc-sudoers"><a href="#设置-etc-sudoers" class="headerlink" title="设置/etc/sudoers"></a>设置/etc/sudoers</h2><p>以root用户编辑/etc/sudoers文件，增加如下oracle那一行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Allow root to run any commands anywhere </span><br><span class="line">root	ALL=(ALL) 	ALL</span><br><span class="line">oracle  ALL=(ALL)   NOPASSWD:ALL</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置root常用路径"><a href="#设置root常用路径" class="headerlink" title="设置root常用路径"></a>设置root常用路径</h2><p>如上设置后，用sudo会提示有些命令找不到，但是如果切回root用户一切正常，如<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[oracle@edsir71p9 ~]$ sudo ifconfig</span><br><span class="line">sudo: ifconfig: <span class="built_in">command</span> not found</span><br><span class="line">[oracle@edsir71p9 ~]$ su - root</span><br><span class="line">Password: </span><br><span class="line">[root@edsir71p9 ~]<span class="comment"># ifconfig</span></span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:28:44:EA  </span><br><span class="line">          inet addr:10.190.104.39  Bcast:10.190.104.255  Mask:255.255.255.0</span><br><span class="line">          inet6 addr: fe80::250:56ff:fe28:44ea/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:324662 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:14497 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:452911712 (431.9 MiB)  TX bytes:1689108 (1.6 MiB)</span><br><span class="line">          Interrupt:67 Base address:0x2024</span><br></pre></td></tr></table></figure></p>
-<p>出现这种问题，一般是oracle用户找不到那些命令的位置，可以在/etc/sudoers中添加secure_path参数把root的常用路径都写上去<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Defaults    secure_path=<span class="string">"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</span></span><br></pre></td></tr></table></figure></p>
-<p>问题解决<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[oracle@edsir71p9 ~]$ sudo ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:28:44:EA  </span><br><span class="line">          inet addr:10.190.104.39  Bcast:10.190.104.255  Mask:255.255.255.0</span><br><span class="line">          inet6 addr: fe80::250:56ff:fe28:44ea/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:325116 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:14871 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:452952418 (431.9 MiB)  TX bytes:1734212 (1.6 MiB)</span><br><span class="line">          Interrupt:67 Base address:0x2024</span><br></pre></td></tr></table></figure></p>
+      <h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>实验环境本文基于Oracle Linux 7.5搭建<br> Oracle Linux 7.5<br> Oracle Database 19.2.0.0</p>
+<p>##Oracle Linux 7.5安装<br>没有什么特殊的地方，不再累述<br>只有下面几个要注意的点</p>
+<ol>
+<li>关闭KDUMP</li>
+<li>关闭SECURITY POLICY</li>
+<li>软件包的选择<br><img src="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/./ol75_ora192-2019-04-14-18-05-34.png" alt="Alt text"></li>
+<li>关闭SELINUX<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>将SELINUX置为permissive<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=permissive</span><br></pre></td></tr></table></figure></p>
+<ol start="5">
+<li>关闭防火墙<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<blockquote>
+<p>Note:</p>
+<ul>
+<li>从Oracle Linux 6开始service被替换为systemctl</li>
+<li>从Oracle Linux 6开始防火墙iptables被替换为firewalld</li>
+</ul>
+</blockquote>
+<h2 id="Linux环境设置"><a href="#Linux环境设置" class="headerlink" title="Linux环境设置"></a>Linux环境设置</h2><h3 id="新建用户"><a href="#新建用户" class="headerlink" title="新建用户"></a>新建用户</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">groupadd -g oinstall</span><br><span class="line">groupadd -g dba</span><br><span class="line">groupadd -g oper</span><br><span class="line">usermod -g oinstall -G dba,oper oracle</span><br></pre></td></tr></table></figure>
+<h3 id="创建目录"><a href="#创建目录" class="headerlink" title="创建目录"></a>创建目录</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@ora192 ~]<span class="comment"># su - root</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># mkdir -p /u01/app/oracle/product/19.0.0/dbhome_1</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># mkdir -p /u01/app/oracle/oradata</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># chown -R oracle.oinstall /u01</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># chmod -R 775 /u01</span></span><br></pre></td></tr></table></figure>
+<h3 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h3><p>以oracle用户编辑/home/oracle/.bash_profile,添加下面一个环境变量<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ORACLE_SID=CDB1</span><br><span class="line"><span class="built_in">export</span> ORACLE_BASE=/u01/app/oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1</span><br></pre></td></tr></table></figure></p>
+<h3 id="运行脚本"><a href="#运行脚本" class="headerlink" title="运行脚本"></a>运行脚本</h3><p>现在还没有19c的yum脚本，文档中依然还是建议用18c的脚本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install oracle-database-preinstall-18c</span><br></pre></td></tr></table></figure></p>
+<h2 id="Oracle-Software安装"><a href="#Oracle-Software安装" class="headerlink" title="Oracle Software安装"></a>Oracle Software安装</h2><h3 id="设置xhost"><a href="#设置xhost" class="headerlink" title="设置xhost"></a>设置xhost</h3><p>以root用户运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ora192 ~]<span class="comment"># xhost +</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="设置DISPLAY"><a href="#设置DISPLAY" class="headerlink" title="设置DISPLAY"></a>设置DISPLAY</h3><p>以oracle用户运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora192 database]$ <span class="built_in">export</span> DISPLAY=:0.0</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h2><p>和18c的安装没有什么大的不同，不再累述</p>
+<blockquote>
+<p>Notes:</p>
+<ul>
+<li>从18c开始，安装包需放到ORACLE_HOME下面去解压缩，这样安装的时候才能自动识别并安装到$ORACLE_HOME下面去</li>
+</ul>
+</blockquote>
+<h2 id="新建DB"><a href="#新建DB" class="headerlink" title="新建DB"></a>新建DB</h2><p>通过dbca建db和18c的安装没有什么大的不同，不再累述</p>
 
     </div>
   </div>
@@ -240,7 +269,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2019/04/14/sudo时无需输入用户密码/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -300,20 +329,20 @@
           <i class="iconfont icon-06tags"></i>标签: 
           
           <span class="span--tag">
-            <a href="/tags/Linux/">
-              #Linux
+            <a href="/tags/Oracle/">
+              #Oracle
             </a>
           </span>
           
           <span class="span--tag">
-            <a href="/tags/Oracle-Linux-5-5/">
-              #Oracle Linux 5.5
+            <a href="/tags/Oracle-19c/">
+              #Oracle 19c
             </a>
           </span>
           
           <span class="span--tag">
-            <a href="/tags/sudo/">
-              #sudo
+            <a href="/tags/Oracle-Linux/">
+              #Oracle Linux
             </a>
           </span>
           
@@ -338,15 +367,9 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/04/14/不同网段的Linux之间互相访问/" target="_self">不同网段的Linux之间互相访问</a>
+        <a href="/2019/04/14/sudo时无需输入用户密码/" target="_self">sudo时无需输入用户密码</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/" target="_self">Oracle 19c Installation on Oracle Linux 7.5</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
