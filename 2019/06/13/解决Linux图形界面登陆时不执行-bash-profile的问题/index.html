@@ -8,12 +8,12 @@
   
   
   
-  <title>Oracle 19c Installation on Oracle Linux 7.5 | Shen Peng&#39;s Blog</title>
+  <title>解决Linux图形界面登陆时不执行~/.bash_profile的问题 | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Oracle,Oracle,Oracle 19c,Oracle Linux,">
+    <meta name="keywords" content="Linux,Linux,Oracle Linux,Oracle Linux 7.5,">
   
 
   <script>
@@ -197,24 +197,24 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>Oracle 19c Installation on Oracle Linux 7.5</span>
+    <span>解决Linux图形界面登陆时不执行~/.bash_profile的问题</span>
   </h1>
   <div class="article-top-meta">
     <span>
       发布 : 
-      2019-04-14
+      2019-06-13
     </span>
     
       <span>
         分类 : 
-          <a href="/categories/Oracle/">
-            Oracle
+          <a href="/categories/Linux/">
+            Linux
           </a>
       </span>
     
     
       <span>
-        浏览 : <span class="article-timer" data-identity="Oracle-19c-Installation-on-Oracle-Linux-7-5"></span>
+        浏览 : <span class="article-timer" data-identity="解决Linux图形界面登陆时不执行-bash-profile的问题"></span>
       </span>
     
   </div>
@@ -223,33 +223,14 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>实验环境本文基于Oracle Linux 7.5搭建<br> Oracle Linux 7.5<br> Oracle Database 19.2.0.0</p>
-<p>##Oracle Linux 7.5安装<br>没有什么特殊的地方，不再累述<br>只有下面几个要注意的点</p>
-<h3 id="关闭KDUMP"><a href="#关闭KDUMP" class="headerlink" title="关闭KDUMP"></a>关闭KDUMP</h3><h3 id="关闭SECURITY-POLICY"><a href="#关闭SECURITY-POLICY" class="headerlink" title="关闭SECURITY POLICY"></a>关闭SECURITY POLICY</h3><h3 id="软件包的选择"><a href="#软件包的选择" class="headerlink" title="软件包的选择"></a>软件包的选择</h3><p><img src="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/./ol75_ora192-2019-04-14-18-05-34.png" alt="Alt text"></p>
-<h3 id="关闭SELINUX"><a href="#关闭SELINUX" class="headerlink" title="关闭SELINUX"></a>关闭SELINUX</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
-<p>将SELINUX置为permissive<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=permissive</span><br></pre></td></tr></table></figure></p>
-<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>Note:</p>
-<ul>
-<li>从Oracle Linux 6开始service被替换为systemctl</li>
-<li>从Oracle Linux 6开始防火墙iptables被替换为firewalld</li>
-</ul>
-</blockquote>
-<h2 id="Linux环境设置"><a href="#Linux环境设置" class="headerlink" title="Linux环境设置"></a>Linux环境设置</h2><h3 id="新建用户"><a href="#新建用户" class="headerlink" title="新建用户"></a>新建用户</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">groupadd -g oinstall</span><br><span class="line">groupadd -g dba</span><br><span class="line">groupadd -g oper</span><br><span class="line">usermod -g oinstall -G dba,oper oracle</span><br></pre></td></tr></table></figure>
-<h3 id="创建目录"><a href="#创建目录" class="headerlink" title="创建目录"></a>创建目录</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@ora192 ~]<span class="comment"># su - root</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># mkdir -p /u01/app/oracle/product/19.0.0/dbhome_1</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># mkdir -p /u01/app/oracle/oradata</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># chown -R oracle.oinstall /u01</span></span><br><span class="line">[root@ora192 ~]<span class="comment"># chmod -R 775 /u01</span></span><br></pre></td></tr></table></figure>
-<h3 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h3><p>以oracle用户编辑/home/oracle/.bash_profile,添加下面一个环境变量<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ORACLE_SID=CDB1</span><br><span class="line"><span class="built_in">export</span> ORACLE_BASE=/u01/app/oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1</span><br></pre></td></tr></table></figure></p>
-<h3 id="运行脚本"><a href="#运行脚本" class="headerlink" title="运行脚本"></a>运行脚本</h3><p>现在还没有19c的yum脚本，文档中依然还是建议用18c的脚本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install oracle-database-preinstall-18c</span><br></pre></td></tr></table></figure></p>
-<h2 id="Oracle-Software安装"><a href="#Oracle-Software安装" class="headerlink" title="Oracle Software安装"></a>Oracle Software安装</h2><h3 id="设置xhost"><a href="#设置xhost" class="headerlink" title="设置xhost"></a>设置xhost</h3><p>以root用户运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ora192 ~]<span class="comment"># xhost +</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="设置DISPLAY"><a href="#设置DISPLAY" class="headerlink" title="设置DISPLAY"></a>设置DISPLAY</h3><p>以oracle用户运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora192 database]$ <span class="built_in">export</span> DISPLAY=:0.0</span><br></pre></td></tr></table></figure></p>
-<h3 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h3><p>和18c的安装没有什么大的不同，不再累述</p>
-<blockquote>
-<p>Notes:</p>
-<ul>
-<li>从18c开始，安装包需放到ORACLE_HOME下面去解压缩，这样安装的时候才能自动识别并安装到$ORACLE_HOME下面去</li>
-</ul>
-</blockquote>
-<h2 id="新建DB"><a href="#新建DB" class="headerlink" title="新建DB"></a>新建DB</h2><p>通过dbca建db和18c的安装没有什么大的不同，不再累述</p>
+      <h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>Oracle Linux 7.5<br>Oracle database 12.2.0.1<br>$ORACLE_HOME=/u01/app/oracle/product/12.2.0.1/db_1</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>oracle用户的~/.bash_profile文件设置如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora122 ~]$ cat ~/.bash_profile </span><br><span class="line"><span class="comment"># .bash_profile</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Get the aliases and functions</span></span><br><span class="line"><span class="keyword">if</span> [ -f ~/.bashrc ]; <span class="keyword">then</span></span><br><span class="line">	. ~/.bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># User specific environment and startup programs</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$HOME</span>/.<span class="built_in">local</span>/bin:<span class="variable">$HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH</span><br><span class="line"></span><br><span class="line">. /home/oracle/scripts/setEnv.sh</span><br></pre></td></tr></table></figure>
+<p>/home/oracle/scripts/setEnv.sh里面配置了和oracle instance相关的环境变量，如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora122 ~]$ cat /home/oracle/scripts/setEnv.sh</span><br><span class="line"><span class="comment"># Oracle Settings</span></span><br><span class="line"><span class="built_in">export</span> TMP=/tmp</span><br><span class="line"><span class="built_in">export</span> TMPDIR=<span class="variable">$TMP</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> ORACLE_HOSTNAME=ora122.localdomain</span><br><span class="line"><span class="built_in">export</span> ORACLE_UNQNAME=cdb1</span><br><span class="line"><span class="built_in">export</span> ORACLE_BASE=/u01/app/oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_HOME=<span class="variable">$ORACLE_BASE</span>/product/12.2.0.1/db_1</span><br><span class="line"><span class="built_in">export</span> ORACLE_SID=cdb1</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=/usr/sbin:/usr/<span class="built_in">local</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ORACLE_HOME</span>/bin:<span class="variable">$ORACLE_HOME</span>/sqlcl/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$ORACLE_HOME</span>/lib:/lib:/usr/lib</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$ORACLE_HOME</span>/jlib:<span class="variable">$ORACLE_HOME</span>/rdbms/jlib</span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> sp1=<span class="string">'sqlplus sys/oracle@cdb1 as sysdba'</span></span><br><span class="line"><span class="built_in">alias</span> sp2=<span class="string">'sqlplus sys/oracle@pdb1 as sysdba'</span></span><br></pre></td></tr></table></figure>
+<p>在开机界面UI登陆oracle用户时，不会自动执行~/.bash_profile文件，必须在terminal通过su -<br> oracle再次切换到oracle用户时，~/.bash_profile文件才会被执行，环境变量才会生效。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>通过登陆界面登陆oracle用户时，是通过non-login shell的方式来登陆的，此时~/.bash_profile不会被执行，但此时~/.bashrc会被执行。<br>因此，修改oracle用户的~/.bashrc如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora122 ~]$ cat ~/.bashrc</span><br><span class="line"><span class="comment"># .bashrc</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Source global definitions</span></span><br><span class="line"><span class="keyword">if</span> [ -f /etc/bashrc ]; <span class="keyword">then</span></span><br><span class="line">	. /etc/bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment the following line if you don't like systemctl's auto-paging feature:</span></span><br><span class="line"><span class="comment"># export SYSTEMD_PAGER=</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># User specific aliases and functions</span></span><br><span class="line"></span><br><span class="line">. /home/oracle/scripts/setEnv.sh</span><br></pre></td></tr></table></figure>
 
     </div>
   </div>
@@ -261,7 +242,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2019/06/13/解决Linux图形界面登陆时不执行-bash-profile的问题/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -321,20 +302,20 @@
           <i class="iconfont icon-06tags"></i>标签: 
           
           <span class="span--tag">
-            <a href="/tags/Oracle/">
-              #Oracle
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/Oracle-19c/">
-              #Oracle 19c
+            <a href="/tags/Linux/">
+              #Linux
             </a>
           </span>
           
           <span class="span--tag">
             <a href="/tags/Oracle-Linux/">
               #Oracle Linux
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/Oracle-Linux-7-5/">
+              #Oracle Linux 7.5
             </a>
           </span>
           
@@ -359,15 +340,9 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/04/14/sudo时无需输入用户密码/" target="_self">sudo时无需输入用户密码</a>
+        <a href="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/" target="_self">Oracle 19c Installation on Oracle Linux 7.5</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2019/06/13/解决Linux图形界面登陆时不执行-bash-profile的问题/" target="_self">解决Linux图形界面登陆时不执行~/.bash_profile的问题</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
