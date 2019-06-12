@@ -8,12 +8,12 @@
   
   
   
-  <title>解决Linux图形界面登陆时不执行~/.bash_profile的问题 | Shen Peng&#39;s Blog</title>
+  <title>CDB启动时自动启动所有的PDB | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Linux,Linux,Oracle Linux,Oracle Linux 7.5,">
+    <meta name="keywords" content="Oracle,Linux,Oracle Linux,Oracle Linux 7.5,Oracle,Oracle 12c,scripts,trigger,">
   
 
   <script>
@@ -197,7 +197,7 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>解决Linux图形界面登陆时不执行~/.bash_profile的问题</span>
+    <span>CDB启动时自动启动所有的PDB</span>
   </h1>
   <div class="article-top-meta">
     <span>
@@ -207,14 +207,14 @@
     
       <span>
         分类 : 
-          <a href="/categories/Linux/">
-            Linux
+          <a href="/categories/Oracle/">
+            Oracle
           </a>
       </span>
     
     
       <span>
-        浏览 : <span class="article-timer" data-identity="解决Linux图形界面登陆时不执行-bash-profile的问题"></span>
+        浏览 : <span class="article-timer" data-identity="CDB启动时自动启动所有的PDB"></span>
       </span>
     
   </div>
@@ -223,15 +223,13 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>Oracle Linux 7.5<br>Oracle database 12.2.0.1<br>$ORACLE_HOME=/u01/app/oracle/product/12.2.0.1/db_1</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>oracle用户的~/.bash_profile文件设置如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora122 ~]$ cat ~/.bash_profile </span><br><span class="line"><span class="comment"># .bash_profile</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Get the aliases and functions</span></span><br><span class="line"><span class="keyword">if</span> [ -f ~/.bashrc ]; <span class="keyword">then</span></span><br><span class="line">	. ~/.bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># User specific environment and startup programs</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$HOME</span>/.<span class="built_in">local</span>/bin:<span class="variable">$HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH</span><br><span class="line"></span><br><span class="line">. /home/oracle/scripts/setEnv.sh</span><br></pre></td></tr></table></figure>
-<p>/home/oracle/scripts/setEnv.sh里面配置了和oracle instance相关的环境变量，如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora122 ~]$ cat /home/oracle/scripts/setEnv.sh</span><br><span class="line"><span class="comment"># Oracle Settings</span></span><br><span class="line"><span class="built_in">export</span> TMP=/tmp</span><br><span class="line"><span class="built_in">export</span> TMPDIR=<span class="variable">$TMP</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> ORACLE_HOSTNAME=ora122.localdomain</span><br><span class="line"><span class="built_in">export</span> ORACLE_UNQNAME=cdb1</span><br><span class="line"><span class="built_in">export</span> ORACLE_BASE=/u01/app/oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_HOME=<span class="variable">$ORACLE_BASE</span>/product/12.2.0.1/db_1</span><br><span class="line"><span class="built_in">export</span> ORACLE_SID=cdb1</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=/usr/sbin:/usr/<span class="built_in">local</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ORACLE_HOME</span>/bin:<span class="variable">$ORACLE_HOME</span>/sqlcl/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$ORACLE_HOME</span>/lib:/lib:/usr/lib</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$ORACLE_HOME</span>/jlib:<span class="variable">$ORACLE_HOME</span>/rdbms/jlib</span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> sp1=<span class="string">'sqlplus sys/oracle@cdb1 as sysdba'</span></span><br><span class="line"><span class="built_in">alias</span> sp2=<span class="string">'sqlplus sys/oracle@pdb1 as sysdba'</span></span><br></pre></td></tr></table></figure>
-<p>在开机界面UI登陆oracle用户时，不会自动执行~/.bash_profile文件，必须在terminal通过su -<br> oracle再次切换到oracle用户时，~/.bash_profile文件才会被执行，环境变量才会生效。</p>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>通过登陆界面登陆oracle用户时，是通过non-login shell的方式来登陆的，此时~/.bash_profile不会被执行，但此时~/.bashrc会被执行。<br>因此，修改oracle用户的~/.bashrc如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora122 ~]$ cat ~/.bashrc</span><br><span class="line"><span class="comment"># .bashrc</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Source global definitions</span></span><br><span class="line"><span class="keyword">if</span> [ -f /etc/bashrc ]; <span class="keyword">then</span></span><br><span class="line">	. /etc/bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment the following line if you don't like systemctl's auto-paging feature:</span></span><br><span class="line"><span class="comment"># export SYSTEMD_PAGER=</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># User specific aliases and functions</span></span><br><span class="line"></span><br><span class="line">. /home/oracle/scripts/setEnv.sh</span><br></pre></td></tr></table></figure>
-
+      <h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>Oracle Linux 7.5<br>Oracle database 12.2.0.1<br>ORACLE_SID=cdb1<br>ORACLE_HOME=/u01/app/oracle/product/12.2.0.1/db_1</p>
+<p>##问题<br>cdb1启动后，还需要手动开启所有的pdb，能否让pdb1在cdb1启动后自动启动？</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">C:\Oracle\network&gt;sql sys/oracle@cdb1 as sysdba</span><br><span class="line"></span><br><span class="line">SQLcl: 发行版 19.1 Production, 发行日期 星期三 六月 12 19:00:00 2019</span><br><span class="line"></span><br><span class="line">版权所有 (c) 1982, 2019, Oracle。保留所有权利。</span><br><span class="line"></span><br><span class="line">已连接到空闲实例, startup 命令可用。</span><br><span class="line"></span><br><span class="line">SQL&gt; startup</span><br><span class="line">ORACLE 实例已启动。</span><br><span class="line"></span><br><span class="line">Total System Global Area   2516582400 bytes</span><br><span class="line">Fixed Size                    8795904 bytes</span><br><span class="line">Variable Size               671090944 bytes</span><br><span class="line">Database Buffers           1828716544 bytes</span><br><span class="line">Redo Buffers                  7979008 bytes</span><br><span class="line">数据库已装载。</span><br><span class="line">数据库已经打开。</span><br><span class="line">SQL&gt; show pdbs</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME                       OPEN MODE  RESTRICTED</span><br><span class="line">---------- ------------------------------ ---------- ----------</span><br><span class="line">         2 PDB<span class="variable">$SEED</span>                       READ ONLY  NO</span><br><span class="line">         3 PDB1                           MOUNTED</span><br><span class="line">SQL&gt; alter pluggable database pdb1 open;</span><br><span class="line"></span><br><span class="line">Pluggable database PDB1已变更。</span><br><span class="line"></span><br><span class="line">SQL&gt; show pdbs</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME                       OPEN MODE  RESTRICTED</span><br><span class="line">---------- ------------------------------ ---------- ----------</span><br><span class="line">         2 PDB<span class="variable">$SEED</span>                       READ ONLY  NO</span><br><span class="line">         3 PDB1                           READ WRITE NO</span><br></pre></td></tr></table></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>这种情况下需要创建一个数据库级别的trigger</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">TRIGGER</span> open_all_pdbs</span><br><span class="line"><span class="keyword">AFTER</span> <span class="keyword">STARTUP</span></span><br><span class="line"><span class="keyword">ON</span> <span class="keyword">DATABASE</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">        <span class="keyword">EXECUTE</span> <span class="keyword">IMMEDIATE</span> <span class="string">'alter pluggable database all open'</span>;</span><br><span class="line"><span class="keyword">END</span> open_all_pdbs;</span><br><span class="line">/</span><br></pre></td></tr></table></figure>
+<p>测试如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">C:\Oracle\network&gt;sql sys/oracle@cdb1 as sysdba</span><br><span class="line"></span><br><span class="line">SQLcl: 发行版 19.1 Production, 发行日期 星期三 六月 12 19:04:30 2019</span><br><span class="line"></span><br><span class="line">版权所有 (c) 1982, 2019, Oracle。保留所有权利。</span><br><span class="line"></span><br><span class="line">已连接到:</span><br><span class="line">Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SQL&gt;</span><br><span class="line">SQL&gt;</span><br><span class="line">SQL&gt;</span><br><span class="line">SQL&gt;</span><br><span class="line">SQL&gt; CREATE OR REPLACE TRIGGER open_all_pdbs</span><br><span class="line">  2  AFTER STARTUP</span><br><span class="line">  3  ON DATABASE</span><br><span class="line">  4  BEGIN</span><br><span class="line">  5          EXECUTE IMMEDIATE <span class="string">'alter pluggable database all open'</span>;</span><br><span class="line">  6  END open_all_pdbs;</span><br><span class="line">  7  /</span><br><span class="line"></span><br><span class="line">Trigger OPEN_ALL_PDBS 已编译</span><br><span class="line"></span><br><span class="line">SQL&gt;</span><br><span class="line">SQL&gt; shutdown immediate</span><br><span class="line">数据库已关闭。</span><br><span class="line">数据库已卸装。</span><br><span class="line">ORACLE 例程已经关闭。</span><br><span class="line">SQL&gt; startup</span><br><span class="line">ORACLE 实例已启动。</span><br><span class="line"></span><br><span class="line">Total System Global Area   2516582400 bytes</span><br><span class="line">Fixed Size                    8795904 bytes</span><br><span class="line">Variable Size               671090944 bytes</span><br><span class="line">Database Buffers           1828716544 bytes</span><br><span class="line">Redo Buffers                  7979008 bytes</span><br><span class="line">数据库已装载。</span><br><span class="line">数据库已经打开。</span><br><span class="line">SQL&gt; show pdbs</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME                       OPEN MODE  RESTRICTED</span><br><span class="line">---------- ------------------------------ ---------- ----------</span><br><span class="line">         2 PDB<span class="variable">$SEED</span>                       READ ONLY  NO</span><br><span class="line">         3 PDB1                           READ WRITE NO</span><br></pre></td></tr></table></figure>
     </div>
   </div>
   
@@ -242,7 +240,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2019/06/13/解决Linux图形界面登陆时不执行-bash-profile的问题/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2019/06/13/CDB启动时自动启动所有的PDB/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -319,6 +317,30 @@
             </a>
           </span>
           
+          <span class="span--tag">
+            <a href="/tags/Oracle/">
+              #Oracle
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/Oracle-12c/">
+              #Oracle 12c
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/scripts/">
+              #scripts
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/trigger/">
+              #trigger
+            </a>
+          </span>
+          
         
       </span>
     </div>
@@ -340,15 +362,9 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/" target="_self">Oracle 19c Installation on Oracle Linux 7.5</a>
+        <a href="/2019/06/13/解决Linux图形界面登陆时不执行-bash-profile的问题/" target="_self">解决Linux图形界面登陆时不执行~/.bash_profile的问题</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2019/06/13/CDB启动时自动启动所有的PDB/" target="_self">CDB启动时自动启动所有的PDB</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
