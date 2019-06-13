@@ -8,12 +8,12 @@
   
   
   
-  <title>Xshell连接Oracle Linux 7.5校验慢的问题 | Shen Peng&#39;s Blog</title>
+  <title>Error in invoking target &#39;agent nmhs&#39; of makefile ... when install Oracle 11gR2 on Oracle Linux 7.5 | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Linux,Linux,Oracle Linux,Oracle Linux 7.5,tools,Xshell,">
+    <meta name="keywords" content="Oracle,Linux,Oracle Linux,Oracle Linux 7.5,Oracle,Oracle 11g,Oracle Installation,">
   
 
   <script>
@@ -197,7 +197,7 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>Xshell连接Oracle Linux 7.5校验慢的问题</span>
+    <span>Error in invoking target 'agent nmhs' of makefile ... when install Oracle 11gR2 on Oracle Linux 7.5</span>
   </h1>
   <div class="article-top-meta">
     <span>
@@ -207,14 +207,14 @@
     
       <span>
         分类 : 
-          <a href="/categories/Linux/">
-            Linux
+          <a href="/categories/Oracle/">
+            Oracle
           </a>
       </span>
     
     
       <span>
-        浏览 : <span class="article-timer" data-identity="Xshell连接Oracle-Linux-7-5校验慢的问题"></span>
+        浏览 : <span class="article-timer" data-identity="Error-in-invoking-target-agent-nmhs-of-makefile-when-install-Oracle-11gR2-on-Oracle-Linux-7-5"></span>
       </span>
     
   </div>
@@ -223,15 +223,17 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Xshell 6<br>Oracle Linux 7.5</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Xshell连Oracle Linux 7.5，连接阶段非常慢，但之前使用Oracle Linux 5.5一切正常。</p>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><h3 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h3><p>根据多方查找，发现问题是Xshell在通过ssh连接Oracle Linux 7.5时会校验DNS所致。</p>
-<h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3><p>关闭DNS校验</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[oracle@ora122 ~]$ vi /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
-<p>文件中查找UsePAM yes，在其后面添加UseDNS no，如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#GSSAPIKeyExchange no</span></span><br><span class="line"><span class="comment">#GSSAPIEnablek5users no</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set this to 'yes' to enable PAM authentication, account processing,</span></span><br><span class="line"><span class="comment"># and session processing. If this is enabled, PAM authentication will</span></span><br><span class="line"><span class="comment"># be allowed through the ChallengeResponseAuthentication and</span></span><br><span class="line"><span class="comment"># PasswordAuthentication.  Depending on your PAM configuration,</span></span><br><span class="line"><span class="comment"># PAM authentication via ChallengeResponseAuthentication may bypass</span></span><br><span class="line"><span class="comment"># the setting of "PermitRootLogin without-password".</span></span><br><span class="line"><span class="comment"># If you just want the PAM account and session checks to run without</span></span><br><span class="line"><span class="comment"># PAM authentication, then enable this but set PasswordAuthentication</span></span><br><span class="line"><span class="comment"># and ChallengeResponseAuthentication to 'no'.</span></span><br><span class="line"><span class="comment"># WARNING: 'UsePAM no' is not supported in Red Hat Enterprise Linux and may cause several</span></span><br><span class="line"><span class="comment"># problems.</span></span><br><span class="line">UsePAM yes</span><br><span class="line">UseDNS no</span><br><span class="line"></span><br><span class="line"><span class="comment">#AllowAgentForwarding yes</span></span><br><span class="line"><span class="comment">#AllowTcpForwarding yes</span></span><br></pre></td></tr></table></figure>
-<p>重启ssh服务，问题解决。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart sshd</span><br></pre></td></tr></table></figure>
+      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Oracle Linux 7.5 64-bit<br>Oracle 11.2.0.3 64-bit</p>
+<h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><p>安装过程中报错如图<br><img src="/2019/06/13/Error-in-invoking-target-agent-nmhs-of-makefile-when-install-Oracle-11gR2-on-Oracle-Linux-7-5/./Pict_20190613_002.jpg" alt="Alt text"></p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>以oracle用户执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$ORACLE_HOME</span>/sysman/lib</span><br></pre></td></tr></table></figure>
+<p>备份要修改的文件ins_emagent.mk</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp ins_emagent.mk ins_emagent.mk.bak</span><br></pre></td></tr></table></figure>
+<p>修改ins_emagent.mk</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ins_emagent.mk</span><br></pre></td></tr></table></figure>
+<p>查找到NMECTL，在本行最后添加  -lnnz11</p>
+<p><img src="/2019/06/13/Error-in-invoking-target-agent-nmhs-of-makefile-when-install-Oracle-11gR2-on-Oracle-Linux-7-5/./Pict_20190613_001.jpg" alt="Alt text"></p>
+<p>Oracle安装界面点击Retry按钮，报错解决。</p>
 
     </div>
   </div>
@@ -243,7 +245,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2019/06/13/Xshell连接Oracle-Linux-7-5校验慢的问题/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2019/06/13/Error-in-invoking-target-agent-nmhs-of-makefile-when-install-Oracle-11gR2-on-Oracle-Linux-7-5/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -321,14 +323,20 @@
           </span>
           
           <span class="span--tag">
-            <a href="/tags/tools/">
-              #tools
+            <a href="/tags/Oracle/">
+              #Oracle
             </a>
           </span>
           
           <span class="span--tag">
-            <a href="/tags/Xshell/">
-              #Xshell
+            <a href="/tags/Oracle-11g/">
+              #Oracle 11g
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/Oracle-Installation/">
+              #Oracle Installation
             </a>
           </span>
           
@@ -353,15 +361,9 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/06/13/CDB启动时自动启动所有的PDB/" target="_self">CDB启动时自动启动所有的PDB</a>
+        <a href="/2019/06/13/Xshell连接Oracle-Linux-7-5校验慢的问题/" target="_self">Xshell连接Oracle Linux 7.5校验慢的问题</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2019/06/13/Error-in-invoking-target-agent-nmhs-of-makefile-when-install-Oracle-11gR2-on-Oracle-Linux-7-5/" target="_self">Error in invoking target 'agent nmhs' of makefile ... when install Oracle 11gR2 on Oracle Linux 7.5</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
