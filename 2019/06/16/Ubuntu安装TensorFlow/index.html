@@ -8,12 +8,12 @@
   
   
   
-  <title>Ubuntu安装TensorFlow | Shen Peng&#39;s Blog</title>
+  <title>Ubuntu安装TensorFlow | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Hexo, theme-bmw">
+    <meta name="keywords" content="Oracle,Ubuntu,Ubuntu 18.04.2 LT,Python,TensorFlow,">
   
 
   <script>
@@ -197,13 +197,20 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>Ubuntu安装TensorFlow</span>
+    <span>Ubuntu安装TensorFlow</span>
   </h1>
   <div class="article-top-meta">
     <span>
       发布 : 
       2019-06-16
     </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/Oracle/">
+            Oracle
+          </a>
+      </span>
     
     
       <span>
@@ -216,7 +223,25 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      
+      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>VMware Workstation 15 Pro<br>Ubuntu 18.04.2 LTS<br>TensorFlow</p>
+<h2 id="安装Ubuntu"><a href="#安装Ubuntu" class="headerlink" title="安装Ubuntu"></a>安装Ubuntu</h2><h3 id="下载并安装"><a href="#下载并安装" class="headerlink" title="下载并安装"></a>下载并安装</h3><p>Ubuntu下载地址<br><a href="https://ubuntu.com/download/desktop" target="_blank" rel="noopener">https://ubuntu.com/download/desktop</a><br>安装过程不再累述</p>
+<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+<h2 id="方法一：使用python的pip包直接在ubuntu上安装"><a href="#方法一：使用python的pip包直接在ubuntu上安装" class="headerlink" title="方法一：使用python的pip包直接在ubuntu上安装"></a>方法一：使用python的pip包直接在ubuntu上安装</h2><h3 id="安装Anaconda"><a href="#安装Anaconda" class="headerlink" title="安装Anaconda"></a>安装Anaconda</h3><p>Anaconda下载地址如下<br><a href="https://www.anaconda.com/distribution/#download-section" target="_blank" rel="noopener">https://www.anaconda.com/distribution/#download-section</a><br>通过bash命令开始安装，中途需要同意License Agreement，以及输入几次yes<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oracle@ubuntu:~$ bash Anaconda3-2019.03-Linux-x86_64.sh</span><br></pre></td></tr></table></figure></p>
+<p>设置环境变量，修改~/.bashrc文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/home/oracle/anaconda3/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure></p>
+<p>现在你可以通过anaconda-navigator或spyder命令来尝试打开anaconda的界面。</p>
+<h3 id="安装TensorFlow"><a href="#安装TensorFlow" class="headerlink" title="安装TensorFlow"></a>安装TensorFlow</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oracle@ubuntu:~$ pip install tensorflow</span><br></pre></td></tr></table></figure>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>在python命令行环境下输入import tensorflow as tf<br>如果没有报错，说明tensorflow安装完成</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(base) oracle@ubuntu:~$ python</span><br><span class="line">Python 3.7.3 (default, Mar 27 2019, 22:11:17) </span><br><span class="line">[GCC 7.3.0] :: Anaconda, Inc. on linux</span><br><span class="line">Type <span class="string">"help"</span>, <span class="string">"copyright"</span>, <span class="string">"credits"</span> or <span class="string">"license"</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">&gt;&gt;&gt; import tensorflow as tf</span><br></pre></td></tr></table></figure>
+<h2 id="方法二：在ubuntu上用docker导入TensorFlow容器"><a href="#方法二：在ubuntu上用docker导入TensorFlow容器" class="headerlink" title="方法二：在ubuntu上用docker导入TensorFlow容器"></a>方法二：在ubuntu上用docker导入TensorFlow容器</h2><h3 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install docker.io</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
+<p>通过检查docker的版本来确认docker是否安装完成<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">oracle@ubuntu:~$ docker -v</span><br><span class="line">Docker version 18.09.5, build e8ff056</span><br></pre></td></tr></table></figure></p>
+<h3 id="设置访问用户"><a href="#设置访问用户" class="headerlink" title="设置访问用户"></a>设置访问用户</h3><p>把经常要访问docker的用户(我这里是oracle用户)加入docker用户组，否则每次都要用sudo来连接docker。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">oracle@ubuntu:~$ sudo usermod -a -G docker oracle</span><br><span class="line">oracle@ubuntu:~$ </span><br><span class="line">oracle@ubuntu:~$ </span><br><span class="line">oracle@ubuntu:~$ id oracle</span><br><span class="line">uid=1000(oracle) gid=1000(oracle) groups=1000(oracle),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),116(lpadmin),126(sambashare),127(docker)</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装TensorFlow-1"><a href="#安装TensorFlow-1" class="headerlink" title="安装TensorFlow"></a>安装TensorFlow</h3><p>下载tensorflow镜像<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">oracle@ubuntu:~$ sudo docker pull tensorflow/tensorflow</span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from tensorflow/tensorflow</span><br><span class="line">7e6591854262: Pull complete </span><br><span class="line">089d60cb4e0a: Pull complete </span><br><span class="line">9c461696bc09: Pull complete </span><br><span class="line">45085432511a: Pull complete </span><br><span class="line">39a0f500f48c: Pull complete </span><br><span class="line">dffb85072436: Pull complete </span><br><span class="line">fd258a44815e: Pull complete </span><br><span class="line">3e8526522706: Pull complete </span><br><span class="line">a327f3530df2: Pull complete </span><br><span class="line">65609dae40ec: Pull complete </span><br><span class="line">Digest: sha256:017ccbb4f0a944656f7dbccedc96cbb68d4ebfd24a9398592bd2515a304054a4</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> tensorflow/tensorflow:latest</span><br></pre></td></tr></table></figure></p>
+<h3 id="创建tensorflow容器"><a href="#创建tensorflow容器" class="headerlink" title="创建tensorflow容器"></a>创建tensorflow容器</h3><h4 id="创建可通过浏览器访问的容器（TBD）"><a href="#创建可通过浏览器访问的容器（TBD）" class="headerlink" title="创建可通过浏览器访问的容器（TBD）"></a>创建可通过浏览器访问的容器（TBD）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name tensorflow1 -it -p 8888:8888 -v ~/tensorflow:/<span class="built_in">test</span>/data tensorflow/tensorflow</span><br></pre></td></tr></table></figure>
+<p>–name：创建的容器名，即tensorflow1<br>-it：保留命令行运行<br>p 8888:8888：将本地的8888端口和<a href="http://localhost:8888/映射" target="_blank" rel="noopener">http://localhost:8888/映射</a><br>-v ~/tensorflow:/test/data:将本地的~/tensorflow挂载到容器内的/test/data下<br>tensorflow/tensorflow ：默认是tensorflow/tensorflow:latest,指定使用的镜像</p>
+<h4 id="创建命令行容器"><a href="#创建命令行容器" class="headerlink" title="创建命令行容器"></a>创建命令行容器</h4><p>这里是tensorflow2<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oracle@ubuntu:~$ docker run -it --name tensorflow2 tensorflow/tensorflow /bin/bash</span><br></pre></td></tr></table></figure></p>
+<h3 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h3><p>连上容器tensorflow2<br>在python命令行环境下输入import tensorflow as tf<br>如果没有报错，说明tensorflow安装完成<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oracle@ubuntu:~$ docker attach tensorflow2</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@70a2c72f3975:/<span class="comment"># python</span></span><br><span class="line">Python 2.7.12 (default, Nov 12 2018, 14:36:49) </span><br><span class="line">[GCC 5.4.0 20160609] on linux2</span><br><span class="line">Type <span class="string">"help"</span>, <span class="string">"copyright"</span>, <span class="string">"credits"</span> or <span class="string">"license"</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; import tensorflow as tf</span><br></pre></td></tr></table></figure>
+
     </div>
   </div>
   
@@ -283,6 +308,33 @@
   <div class="article-footer">
     <div class="article-meta pull-left">
       <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Ubuntu/">
+              #Ubuntu
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/Ubuntu-18-04-2-LT/">
+              #Ubuntu 18.04.2 LT
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/Python/">
+              #Python
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/TensorFlow/">
+              #TensorFlow
+            </a>
+          </span>
+          
         
       </span>
     </div>
