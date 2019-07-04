@@ -8,12 +8,12 @@
   
   
   
-  <title>Oracle Training Round 18 : Performance Tuning Part 1 - How to generate AWR Reports? | Shen Peng&#39;s Blog</title>
+  <title>Install Oracle Linux 7.5 for Oracle Database | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Oracle,Linux,Oracle Linux,Oracle Linux 7.5,Oracle,Oracle 11g,大鹏的ABC,Oracle Training,Performance Tuning,AWR,">
+    <meta name="keywords" content="Linux,Oracle Linux,Oracle Linux 7.5,blog,">
   
 
   <script>
@@ -197,24 +197,24 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>Oracle Training Round 18 : Performance Tuning Part 1 - How to generate AWR Reports?</span>
+    <span>Install Oracle Linux 7.5 for Oracle Database</span>
   </h1>
   <div class="article-top-meta">
     <span>
       发布 : 
-      2019-06-17
+      2019-07-05
     </span>
     
       <span>
         分类 : 
-          <a href="/categories/Oracle/">
-            Oracle
+          <a href="/categories/Linux/">
+            Linux
           </a>
       </span>
     
     
       <span>
-        浏览 : <span class="article-timer" data-identity="Oracle-Training-Round-18-Performance-Tuning-Part-1-How-to-generate-AWR-reports"></span>
+        浏览 : <span class="article-timer" data-identity="Install-Oracle-Linux-7-5-for-Oracle-Database"></span>
       </span>
     
   </div>
@@ -223,7 +223,21 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <p>PDF Download:<br>链接: <a href="https://pan.baidu.com/s/1r_YpoyfsuVqRpaEtaurIBQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1r_YpoyfsuVqRpaEtaurIBQ</a> 提取码: a6iw<br><img src="/2019/06/17/Oracle-Training-Round-18-Performance-Tuning-Part-1-How-to-generate-AWR-reports/./Oracle_Round18_How_to_create_AWR_Report.jpg" alt="Alt text"></p>
+      <h2 id="操作系统安装前"><a href="#操作系统安装前" class="headerlink" title="操作系统安装前"></a>操作系统安装前</h2><h3 id="软件包选择"><a href="#软件包选择" class="headerlink" title="软件包选择"></a>软件包选择</h3><p>软件包的选择如图<br><img src="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/./pic_20181031_001.jpg" alt="Alt text"></p>
+<p>其余设置不再累述</p>
+<h2 id="操作系统安装后"><a href="#操作系统安装后" class="headerlink" title="操作系统安装后"></a>操作系统安装后</h2><h3 id="设置IP"><a href="#设置IP" class="headerlink" title="设置IP"></a>设置IP</h3><p>不再累述，略</p>
+<h3 id="设置hostname"><a href="#设置hostname" class="headerlink" title="设置hostname"></a>设置hostname</h3><p>Oracle Linux 5 &amp; 6 适用的方法，修改 /etc/sysconfig/network已不生效。</p>
+<h4 id="方法一：修改-etc-hostname"><a href="#方法一：修改-etc-hostname" class="headerlink" title="方法一：修改/etc/hostname"></a>方法一：修改/etc/hostname</h4><p>修改/etc/hostname的第一行，这个文件是Oracle Linux 7新增的，系统识别第一行为hostname。<br>重启生效。</p>
+<h4 id="方法二：使用hostnamectl工具"><a href="#方法二：使用hostnamectl工具" class="headerlink" title="方法二：使用hostnamectl工具"></a>方法二：使用hostnamectl工具</h4><p>hostnamectl是Oracle Linux 7新增的工具，如下，设置hostname为ol75_ora18xe。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hostnamectl <span class="built_in">set</span>-hostname ol75_ora18xe</span><br></pre></td></tr></table></figure></p>
+<p>修改即时生效，再打开一个terminal标签页就能看到hostname的变化。</p>
+<h3 id="设置-etc-hosts"><a href="#设置-etc-hosts" class="headerlink" title="设置/etc/hosts"></a>设置/etc/hosts</h3><p>不再累述，略</p>
+<h3 id="关闭SELinux"><a href="#关闭SELinux" class="headerlink" title="关闭SELinux"></a>关闭SELinux</h3><p> 编辑SELinux配置文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/selinux/config</span><br></pre></td></tr></table></figure></p>
+<p>将配置文件中如下内容设为disabled<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure></p>
+<p>通过setenforce 0使更改即时生效，当然也可以重启操作系统。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setenforce 0</span><br></pre></td></tr></table></figure></p>
+<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>查看防火墙状态<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status firewalld</span><br></pre></td></tr></table></figure></p>
+<p>关闭防火墙<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br></pre></td></tr></table></figure></p>
+<p>查看防火墙是否开机启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl is-enabled firewalld</span><br></pre></td></tr></table></figure></p>
+<p>关闭防火墙开机启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br></pre></td></tr></table></figure></p>
 
     </div>
   </div>
@@ -235,7 +249,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2019/06/17/Oracle-Training-Round-18-Performance-Tuning-Part-1-How-to-generate-AWR-reports/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -295,12 +309,6 @@
           <i class="iconfont icon-06tags"></i>标签: 
           
           <span class="span--tag">
-            <a href="/tags/Linux/">
-              #Linux
-            </a>
-          </span>
-          
-          <span class="span--tag">
             <a href="/tags/Oracle-Linux/">
               #Oracle Linux
             </a>
@@ -313,38 +321,8 @@
           </span>
           
           <span class="span--tag">
-            <a href="/tags/Oracle/">
-              #Oracle
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/Oracle-11g/">
-              #Oracle 11g
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/大鹏的ABC/">
-              #大鹏的ABC
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/Oracle-Training/">
-              #Oracle Training
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/Performance-Tuning/">
-              #Performance Tuning
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/AWR/">
-              #AWR
+            <a href="/tags/blog/">
+              #blog
             </a>
           </span>
           
@@ -369,15 +347,9 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/06/16/Ubuntu安装TensorFlow/" target="_self">Ubuntu安装TensorFlow</a>
+        <a href="/2019/06/17/Oracle-Training-Round-18-Performance-Tuning-Part-1-How-to-generate-AWR-reports/" target="_self">Oracle Training Round 18 : Performance Tuning Part 1 - How to generate AWR Reports?</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/" target="_self">Install Oracle Linux 7.5 for Oracle Database</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
