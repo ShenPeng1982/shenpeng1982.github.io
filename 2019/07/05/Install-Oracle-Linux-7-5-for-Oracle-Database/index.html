@@ -223,7 +223,34 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="操作系统安装前"><a href="#操作系统安装前" class="headerlink" title="操作系统安装前"></a>操作系统安装前</h2><h3 id="软件包选择"><a href="#软件包选择" class="headerlink" title="软件包选择"></a>软件包选择</h3><p>软件包的选择如图<br><img src="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/./pic_20181031_001.jpg" alt="Alt text"></p>
+      <h2 id="操作系统安装前"><a href="#操作系统安装前" class="headerlink" title="操作系统安装前"></a>操作系统安装前</h2><h3 id="手动分区"><a href="#手动分区" class="headerlink" title="手动分区"></a>手动分区</h3><p>对自动分区不甚满意，手动如下</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">分区</th>
+<th style="text-align:right">大小</th>
+<th style="text-align:center">分区格式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/boot</td>
+<td style="text-align:right">1G</td>
+<td style="text-align:center">xfs</td>
+</tr>
+<tr>
+<td style="text-align:left">/swap</td>
+<td style="text-align:right">内存2倍</td>
+<td style="text-align:center">xfs</td>
+</tr>
+<tr>
+<td style="text-align:left">/</td>
+<td style="text-align:right">剩余</td>
+<td style="text-align:center">ext4</td>
+</tr>
+</tbody>
+</table>
+<h3 id="软件包选择"><a href="#软件包选择" class="headerlink" title="软件包选择"></a>软件包选择</h3><p>软件包的选择如图<br><img src="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/./pic_20181031_001.jpg" alt="Alt text"></p>
 <p>其余设置不再累述</p>
 <h2 id="操作系统安装后"><a href="#操作系统安装后" class="headerlink" title="操作系统安装后"></a>操作系统安装后</h2><h3 id="设置IP"><a href="#设置IP" class="headerlink" title="设置IP"></a>设置IP</h3><p>不再累述，略</p>
 <h3 id="设置hostname"><a href="#设置hostname" class="headerlink" title="设置hostname"></a>设置hostname</h3><p>Oracle Linux 5 &amp; 6 适用的方法，修改 /etc/sysconfig/network已不生效。</p>
