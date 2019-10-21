@@ -233,14 +233,20 @@
 <p>在/etc/profile中设置环境变量</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NODEJS_HOME=/u01/nodejs/latest</span><br><span class="line"></span><br><span class="line">PATH=<span class="variable">$NODEJS_HOME</span>/bin:<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$JRE_HOME</span>/bin:<span class="variable">$HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>Note:</strong></p>
+<p><strong>注意:</strong></p>
 <ul>
-<li>/etc/profile中的内容，每个用户登陆时都会执行</li>
+<li>/etc/bashrc中的内容，每个用户登陆时都会执行</li>
 </ul>
 </blockquote>
 <p>测试</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># node -v</span></span><br><span class="line">v10.16.3</span><br></pre></td></tr></table></figure>
-<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>v1.0，2019.10.17，初始版本</p>
+<blockquote>
+<p><strong>注意:</strong></p>
+<ul>
+<li>也可以用nvm安装和管理node.js的版本，见 <a href="https://shenpeng1982.github.io/2019/10/22/Oracle-Linux-7-5-%E5%AE%89%E8%A3%85NVM%E5%92%8CNode-js/" target="_blank" rel="noopener">Link</a></li>
+</ul>
+</blockquote>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>v1.0，2019.10.17，初始版本<br>v1.1，2019.10.22，增加nvm的Link</p>
 
     </div>
   </div>
