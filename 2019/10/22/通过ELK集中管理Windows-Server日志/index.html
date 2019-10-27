@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>通过ELK集中管理Windows Server日志 | Shen Peng&#39;s Blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ELK,Oracle Linux,Oracle Linux 7.5,blog,elasticsearch,logstasch,kibina,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://godbmw.com/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+  <script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.js" async></script>
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">shenpeng1982.github.io</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="/about/" target="_self">
+              关于
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">抓到我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/shenpeng1982" target="_blank">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.douban.com/people/155688738/statuses" target="_blank">
+                    知乎
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>通过ELK集中管理Windows Server日志</span>
+  </h1>
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2019-10-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/ELK/">
+            ELK
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="通过ELK集中管理Windows-Server日志"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h2 id="什么是ELK"><a href="#什么是ELK" class="headerlink" title="什么是ELK"></a>什么是ELK</h2><p>E=ElasticSearch，开源分布式搜索引擎</p>
+<ul>
+<li>分布式</li>
+<li>提供了REST API</li>
+<li>近乎实时搜索</li>
+</ul>
+<p>L=LogStash，开源日志收集和过滤工具</p>
+<ul>
+<li>具有实时管道功能</li>
+</ul>
+<p>K=Kibana，开源的web展示</p>
+<h2 id="架构和使用场景"><a href="#架构和使用场景" class="headerlink" title="架构和使用场景"></a>架构和使用场景</h2><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><h3 id="软件版本"><a href="#软件版本" class="headerlink" title="软件版本"></a>软件版本</h3><p>Oracle Linux 7.5<br>jdk-11.0.4 (LTS)<br>nvm<br>Node.js (LTS)<br>ElasticSearch 7.4<br>elasticsearch-head<br>filebeat 7.4</p>
+<h3 id="服务器架构"><a href="#服务器架构" class="headerlink" title="服务器架构"></a>服务器架构</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">Server</th>
+<th style="text-align:left">IP</th>
+<th style="text-align:left">OS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ELK Server</td>
+<td style="text-align:left">192.168.1.129</td>
+<td style="text-align:left">Oracle Linux 7.5</td>
+</tr>
+<tr>
+<td style="text-align:left">Windows client</td>
+<td style="text-align:left">192.168.1.128</td>
+<td style="text-align:left">Windows Server 2016</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用场景（TBD）"><a href="#使用场景（TBD）" class="headerlink" title="使用场景（TBD）"></a>使用场景（TBD）</h3><p>1） datasource-&gt;logstash-&gt;elasticsearch-&gt;kibana</p>
+<p>2） datasource-&gt;filebeat-&gt;logstash-&gt; elasticsearch-&gt;kibana</p>
+<p>3） datasource-&gt;filebeat-&gt;logstash-&gt;redis/kafka-&gt;logstash-&gt; elasticsearch-&gt;kibana</p>
+<p>4） kafka-&gt;logstash-&gt; elasticsearch-&gt;kibana</p>
+<p>5） datasource-&gt;filebeat-&gt;kafka-&gt;logstash-&gt;elasticsearch-&gt;kibana(最常用)</p>
+<p>6） filebeatSSL加密传输</p>
+<p>7） datasource-&gt;logstash-&gt;redis/kafka-&gt;logstash-&gt;elasticsearch-&gt;kibana</p>
+<p>8） mysql-&gt;logstash-&gt;elasticsearch-&gt;kibana</p>
+<h2 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h2><h3 id="LogStash-TBD"><a href="#LogStash-TBD" class="headerlink" title="LogStash(TBD)"></a>LogStash(TBD)</h3><p>包括3个模块，输入(inputs)，过滤器（filters，可选），和输出(outputs)。<br>每个模块都可以通过不同的插件进行功能上的增强。</p>
+<p>（1）Inputs：用于从数据源获取数据，常见的插件如file, syslog, redis, beats 等[详细参考]<br>（2）Filters：用于处理数据如格式转换，数据派生等，常见的插件如grok, mutate, drop,  clone, geoip等[详细参考]<br>（3）Outputs：用于数据输出，常见的插件如elastcisearch，file, graphite, statsd等[详细参考]<br>（4）Codecs：Codecs不是一个单独的流程，而是在输入和输出等插件中用于数据转换的模块，用于对数据进行编码处理，常见的插件如json，multiline[详细参考]</p>
+<h3 id="ElasticSearch"><a href="#ElasticSearch" class="headerlink" title="ElasticSearch"></a>ElasticSearch</h3><h3 id="Kibana"><a href="#Kibana" class="headerlink" title="Kibana"></a>Kibana</h3><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><p>至少需要Java 11，Java 11是LTS版本<br>安装见 <a href="https://shenpeng1982.github.io/2019/02/21/Linux%E5%AE%89%E8%A3%85Java/" target="_blank" rel="noopener">Link</a></p>
+<h3 id="NVM（Optional）"><a href="#NVM（Optional）" class="headerlink" title="NVM（Optional）"></a>NVM（Optional）</h3><p>下载见 <a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noopener">Link</a><br>安装见 <a href="https://shenpeng1982.github.io/2019/10/22/Oracle-Linux-7-5-%E5%AE%89%E8%A3%85NVM%E5%92%8CNode-js/" target="_blank" rel="noopener">Link</a></p>
+<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><p>下载见 <a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Link</a><br>安装见 <a href="https://shenpeng1982.github.io/2019/10/17/Oracle-Linux-7-5-%E5%AE%89%E8%A3%85Node-js-10-16-3/" target="_blank" rel="noopener">Link</a></p>
+<h2 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h2><h3 id="Elasticsearch文件夹结构"><a href="#Elasticsearch文件夹结构" class="headerlink" title="Elasticsearch文件夹结构"></a>Elasticsearch文件夹结构</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">文件</th>
+<th style="text-align:left">目录</th>
+<th style="text-align:center">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">elasticsearch.yml</td>
+<td style="text-align:left">/u01/elasticsearch/elasticsearch-7.4.0/config</td>
+<td style="text-align:center">配置文件</td>
+</tr>
+</tbody>
+</table>
+<h3 id="安装Elasticsearch"><a href="#安装Elasticsearch" class="headerlink" title="安装Elasticsearch"></a>安装Elasticsearch</h3><p>Linux版本的Elasticsearch无需安装，解压后直接运行即可</p>
+<blockquote>
+<p><strong>注意:</strong></p>
+<ul>
+<li>Elasticsearch不能用root用户启动</li>
+</ul>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s bin]<span class="comment"># mkdir -p /u01/elasticsearch/</span></span><br><span class="line">[root@ol75elk74s bin]<span class="comment"># chown -R elk.elk /u01/elasticsearch/</span></span><br><span class="line">[root@ol75elk74s bin]<span class="comment"># chmod -R 775 /u01/elasticsearch/</span></span><br><span class="line">[root@ol75elk74s java]<span class="comment"># su - elk</span></span><br><span class="line">Last login: Tue Oct 15 02:03:08 CST 2019 on pts/0</span><br><span class="line">[elk@ol75elk74s ~]$ <span class="built_in">cd</span> /u01/elasticsearch/elasticsearch-7.4.0/bin</span><br><span class="line">[elk@ol75elk74s bin]$ ./elasticsearch</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意:</strong></p>
+<ul>
+<li>./elasticsearch -d可以让elasticsearch在后台运行</li>
+</ul>
+</blockquote>
+<p>正常启动的话, 默认端口是9200, 在另外一个窗口运行curl localhost:9200, 可以得到elasticsearch的信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s java]<span class="comment"># curl localhost:9200</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span> : <span class="string">"ol75elk74s"</span>,</span><br><span class="line">  <span class="string">"cluster_name"</span> : <span class="string">"elasticsearch"</span>,</span><br><span class="line">  <span class="string">"cluster_uuid"</span> : <span class="string">"D-KP7bh8S426maJCpm3_fQ"</span>,</span><br><span class="line">  <span class="string">"version"</span> : &#123;</span><br><span class="line">    <span class="string">"number"</span> : <span class="string">"7.4.0"</span>,</span><br><span class="line">    <span class="string">"build_flavor"</span> : <span class="string">"default"</span>,</span><br><span class="line">    <span class="string">"build_type"</span> : <span class="string">"tar"</span>,</span><br><span class="line">    <span class="string">"build_hash"</span> : <span class="string">"22e1767283e61a198cb4db791ea66e3f11ab9910"</span>,</span><br><span class="line">    <span class="string">"build_date"</span> : <span class="string">"2019-09-27T08:36:48.569419Z"</span>,</span><br><span class="line">    <span class="string">"build_snapshot"</span> : <span class="literal">false</span>,</span><br><span class="line">    <span class="string">"lucene_version"</span> : <span class="string">"8.2.0"</span>,</span><br><span class="line">    <span class="string">"minimum_wire_compatibility_version"</span> : <span class="string">"6.8.0"</span>,</span><br><span class="line">    <span class="string">"minimum_index_compatibility_version"</span> : <span class="string">"6.0.0-beta1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"tagline"</span> : <span class="string">"You Know, for Search"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以通过网页访问测试<br><img src="/2019/10/22/通过ELK集中管理Windows-Server日志/./Pict_20191022_000.jpg" alt="Alt text"></p>
+<h3 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h3><p>为了方便，可以将Elasticsearch的bin目录写入环境变量，过程不再累述</p>
+<h3 id="重启Elasticsearch"><a href="#重启Elasticsearch" class="headerlink" title="重启Elasticsearch"></a>重启Elasticsearch</h3><p>找到相应的进程号,再杀掉该进程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps -ef|grep elasticsearch</span><br><span class="line"><span class="built_in">kill</span> -9 3255</span><br></pre></td></tr></table></figure>
+<h3 id="启动时常规错误"><a href="#启动时常规错误" class="headerlink" title="启动时常规错误"></a>启动时常规错误</h3><h4 id="场景-1"><a href="#场景-1" class="headerlink" title="场景 1"></a>场景 1</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[elk@ol75elk74s bin]$ ./elasticsearch -d</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated <span class="keyword">in</span> version 9.0 and will likely be removed <span class="keyword">in</span> a future release.</span><br></pre></td></tr></table></figure>
+<p>只是一个warning，可以忽略</p>
+<h4 id="场景-2"><a href="#场景-2" class="headerlink" title="场景 2"></a>场景 2</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[elk@ol75elk74s bin]$ curl 192.168.1.129:9200</span><br><span class="line">curl: (7) Failed connect to 192.168.1.129:9200; Connection refused</span><br></pre></td></tr></table></figure>
+<p>授权问题，在配置文件elasticsearch.yml中将network.host参数设为0.0.0.0<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ---------------------------------- Network -----------------------------------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Set the bind address to a specific IP (IPv4 or IPv6):</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">network.host: 0.0.0.0</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Set a custom port for HTTP:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#http.port: 9200</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># For more information, consult the network module documentation.</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="场景-3"><a href="#场景-3" class="headerlink" title="场景 3"></a>场景 3</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1]: max file descriptors [4096] <span class="keyword">for</span> elasticsearch process is too low, increase to at least [65535]</span><br></pre></td></tr></table></figure>
+<p>查看当前系统设置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[elk@ol75elk74s bin]$ <span class="built_in">ulimit</span> -Hn</span><br><span class="line">4096</span><br><span class="line">[elk@ol75elk74s bin]$ <span class="built_in">ulimit</span> -Sn</span><br><span class="line">1024</span><br></pre></td></tr></table></figure>
+<p>修改到65535</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># vi /etc/security/limits.conf</span></span><br></pre></td></tr></table></figure>
+<p>增加以下内容<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">*        soft    nofile           65536</span><br><span class="line">*        hard    nofile           65536</span><br><span class="line">*        soft    nproc            4096</span><br><span class="line">*        hard    nproc            4096</span><br></pre></td></tr></table></figure></p>
+<p>用户elk重新登陆后生效</p>
+<h4 id="场景-4"><a href="#场景-4" class="headerlink" title="场景 4"></a>场景 4</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]</span><br></pre></td></tr></table></figure>
+<p>修改系统文件/etc/sysctl.conf<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># vi /etc/sysctl.conf</span></span><br></pre></td></tr></table></figure></p>
+<p>增加如下参数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vm.max_map_count=262144</span><br></pre></td></tr></table></figure></p>
+<p>使新增参数生效<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># sysctl -p</span></span><br><span class="line">vm.max_map_count = 262144</span><br></pre></td></tr></table></figure></p>
+<h4 id="场景-5"><a href="#场景-5" class="headerlink" title="场景 5"></a>场景 5</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1]: the default discovery settings are unsuitable <span class="keyword">for</span> production use; at least one of [discovery.seed_hosts, discovery.seed_providers, cluster.initial_master_nodes] must be configured</span><br></pre></td></tr></table></figure>
+<p>在配置文件elasticsearch.yml中设置cluster.initial_master_nodes参数，指明启动时哪个节点为主<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ---------------------------------- Cluster -----------------------------------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Use a descriptive name for your cluster:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">cluster.name: my-elasticsearch</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ------------------------------------ Node ------------------------------------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Use a descriptive name for the node:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">node.name: node-1</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Add custom attributes to the node:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#node.attr.rack: r1</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># --------------------------------- Discovery ----------------------------------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Pass an initial list of hosts to perform discovery when this node is started:</span></span><br><span class="line"><span class="comment"># The default list of hosts is ["127.0.0.1", "[::1]"]</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#discovery.seed_hosts: ["host1", "host2"]</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Bootstrap the cluster using an initial set of master-eligible nodes:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">cluster.initial_master_nodes: [<span class="string">"node-1"</span>]</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># For more information, consult the discovery and cluster formation module documentation.</span></span><br><span class="line"><span class="comment">#</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Elasticsearch-Head插件"><a href="#Elasticsearch-Head插件" class="headerlink" title="Elasticsearch-Head插件"></a>Elasticsearch-Head插件</h3><h4 id="Head简介"><a href="#Head简介" class="headerlink" title="Head简介"></a>Head简介</h4><p>Elasticsearch的一个可视化前端工具<br>官方地址：<a href="https://github.com/mobz/elasticsearch-head" target="_blank" rel="noopener">Link</a></p>
+<p>head安装需要使用到git以及node.js的npm，Oracle Linux 7.5自带git</p>
+<h4 id="Head安装"><a href="#Head安装" class="headerlink" title="Head安装"></a>Head安装</h4><p>下载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># cd /u01</span></span><br><span class="line">[root@ol75elk74s u01]<span class="comment"># git clone git://github.com/mobz/elasticsearch-head.git</span></span><br><span class="line">Cloning into <span class="string">'elasticsearch-head'</span>...</span><br><span class="line">remote: Enumerating objects: 77, <span class="keyword">done</span>.</span><br><span class="line">remote: Counting objects: 100% (77/77), <span class="keyword">done</span>.</span><br><span class="line">remote: Compressing objects: 100% (57/57), <span class="keyword">done</span>.</span><br><span class="line">remote: Total 4337 (delta 38), reused 45 (delta 17), pack-reused 4260</span><br><span class="line">Receiving objects: 100% (4337/4337), 2.51 MiB | 14.00 KiB/s, <span class="keyword">done</span>.</span><br><span class="line">Resolving deltas: 100% (2411/2411), <span class="keyword">done</span>.</span><br></pre></td></tr></table></figure></p>
+<p>安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s u01]<span class="comment"># cd elasticsearch-head/</span></span><br><span class="line">[root@ol75elk74s elasticsearch-head]<span class="comment"># npm install</span></span><br></pre></td></tr></table></figure></p>
+<p>启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s elasticsearch-head]<span class="comment"># npm run start</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="访问Head"><a href="#访问Head" class="headerlink" title="访问Head"></a>访问Head</h4><p>通过<a href="http://192.168.1.129:9100可以访问到elasticsearch-head，elasticsearch-head默认端口9100" target="_blank" rel="noopener">http://192.168.1.129:9100可以访问到elasticsearch-head，elasticsearch-head默认端口9100</a></p>
+<h5 id="修改elasticsearch-yml配置文件"><a href="#修改elasticsearch-yml配置文件" class="headerlink" title="修改elasticsearch.yml配置文件"></a>修改elasticsearch.yml配置文件</h5><p>如果不能连接elasticsearch，在elasticsearch.yml配置文件中增加以下两行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http.cors.enabled: <span class="literal">true</span></span><br><span class="line">http.cors.allow-origin: <span class="string">"*"</span></span><br></pre></td></tr></table></figure>
+<p>保存后重启elasticsearch<br>连接成功下图<br><img src="/2019/10/22/通过ELK集中管理Windows-Server日志/./Pict_20191022_001.jpg" alt="Alt text"></p>
+<h4 id="后台运行Head"><a href="#后台运行Head" class="headerlink" title="后台运行Head"></a>后台运行Head</h4><p>通过nohup npm run start &amp;命令在后台运行head插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s elasticsearch-head]# nohup npm run start &amp;</span><br><span class="line">[1] 31200</span><br><span class="line">[root@ol75elk74s elasticsearch-head]# nohup: ignoring input and appending output to ‘nohup.out’</span><br><span class="line"></span><br><span class="line">[root@ol75elk74s elasticsearch-head]# </span><br><span class="line">[root@ol75elk74s elasticsearch-head]# ll</span><br><span class="line">total 248</span><br><span class="line">drwxrwxr-x   2 root root   4096 Oct 22 02:36 crx</span><br><span class="line">-rwxrwxr-x   1 root root    248 Oct 22 02:36 Dockerfile</span><br><span class="line">-rwxrwxr-x   1 root root    221 Oct 22 02:36 Dockerfile-alpine</span><br><span class="line">-rwxrwxr-x   1 root root    104 Oct 22 02:36 elasticsearch-head.sublime-project</span><br><span class="line">-rwxrwxr-x   1 root root   2240 Oct 22 02:36 Gruntfile.js</span><br><span class="line">-rwxrwxr-x   1 root root   3482 Oct 22 02:36 grunt_fileSets.js</span><br><span class="line">-rwxrwxr-x   1 root root   1100 Oct 22 02:36 index.html</span><br><span class="line">-rwxrwxr-x   1 root root    559 Oct 22 02:36 LICENCE</span><br><span class="line">drwxr-xr-x 375 root root  12288 Oct 22 02:49 node_modules</span><br><span class="line">-rw-------   1 root root    185 Oct 22 03:04 nohup.out</span><br><span class="line">-rwxrwxr-x   1 root root    886 Oct 22 02:36 package.json</span><br><span class="line">-rw-r--r--   1 root root 168896 Oct 22 02:49 package-lock.json</span><br><span class="line">-rwxrwxr-x   1 root root    100 Oct 22 02:36 plugin-descriptor.properties</span><br><span class="line">drwxrwxr-x   4 root root   4096 Oct 22 02:36 proxy</span><br><span class="line">-rwxrwxr-x   1 root root   7186 Oct 22 02:36 README.textile</span><br><span class="line">drwxrwxr-x   5 root root   4096 Oct 22 02:36 _site</span><br><span class="line">drwxrwxr-x   5 root root   4096 Oct 22 02:36 src</span><br><span class="line">drwxrwxr-x   4 root root   4096 Oct 22 02:36 test</span><br><span class="line">[root@ol75elk74s elasticsearch-head]# more nohup.out </span><br><span class="line"></span><br><span class="line">&gt; elasticsearch-head@0.0.0 start /u01/elasticsearch-head</span><br><span class="line">&gt; grunt server</span><br><span class="line"></span><br><span class="line">Running &quot;connect:server&quot; (connect) task</span><br><span class="line">Waiting forever...</span><br><span class="line">Started connect web server on http://localhost:9100</span><br></pre></td></tr></table></figure></p>
+<h3 id="中文分词插件IK-TBD"><a href="#中文分词插件IK-TBD" class="headerlink" title="中文分词插件IK(TBD)"></a>中文分词插件IK(TBD)</h3><h2 id="Logstash"><a href="#Logstash" class="headerlink" title="Logstash"></a>Logstash</h2><h3 id="安装Logstash"><a href="#安装Logstash" class="headerlink" title="安装Logstash"></a>安装Logstash</h3><p>安装和Elasticsearch类似，不再累述<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /u01/logstash/ </span><br><span class="line">tar -xvf logstash-7.4.0.tar.gz</span><br><span class="line">ln -s logstash-7.4.0/ latest</span><br><span class="line"><span class="built_in">cd</span> latest/bin/</span><br><span class="line">./logstash -e <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span></span><br></pre></td></tr></table></figure></p>
+<p>-e代表使用后面单引号里面带的配置字符串开启一个pipeline，而不是通过配置文件去启动pipeline</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>-e 后面也可以不跟任何输入输出配置，这样会启动默认配置的pipeline</p>
+<ul>
+<li>默认的输入为<br>input { stdin { type =&gt; stdin } } </li>
+<li>默认的输出为<br>output { stdout { codec =&gt; rubydebug } }</li>
+</ul>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s bin]<span class="comment"># logstash -e 'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span></span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated <span class="keyword">in</span> version 9.0 and will likely be removed <span class="keyword">in</span> a future release.</span><br><span class="line">WARNING: An illegal reflective access operation has occurred</span><br><span class="line">WARNING: Illegal reflective access by com.headius.backport9.modules.Modules (file:/u01/logstash/logstash-7.4.0/logstash-core/lib/jars/jruby-complete-9.2.8.0.jar) to field java.io.FileDescriptor.fd</span><br><span class="line">WARNING: Please consider reporting this to the maintainers of com.headius.backport9.modules.Modules</span><br><span class="line">WARNING: Use --illegal-access=warn to <span class="built_in">enable</span> warnings of further illegal reflective access operations</span><br><span class="line">WARNING: All illegal access operations will be denied <span class="keyword">in</span> a future release</span><br><span class="line">Thread.exclusive is deprecated, use Thread::Mutex</span><br><span class="line">Sending Logstash logs to /u01/logstash/latest/logs <span class="built_in">which</span> is now configured via log4j2.properties</span><br><span class="line">[2019-10-23T14:57:43,019][INFO ][logstash.setting.writabledirectory] Creating directory &#123;:setting=&gt;<span class="string">"path.queue"</span>, :path=&gt;<span class="string">"/u01/logstash/latest/data/queue"</span>&#125;</span><br><span class="line">[2019-10-23T14:57:43,042][INFO ][logstash.setting.writabledirectory] Creating directory &#123;:setting=&gt;<span class="string">"path.dead_letter_queue"</span>, :path=&gt;<span class="string">"/u01/logstash/latest/data/dead_letter_queue"</span>&#125;</span><br><span class="line">[2019-10-23T14:57:43,448][WARN ][logstash.config.source.multilocal] Ignoring the <span class="string">'pipelines.yml'</span> file because modules or <span class="built_in">command</span> line options are specified</span><br><span class="line">[2019-10-23T14:57:43,457][INFO ][logstash.runner          ] Starting Logstash &#123;<span class="string">"logstash.version"</span>=&gt;<span class="string">"7.4.0"</span>&#125;</span><br><span class="line">[2019-10-23T14:57:43,486][INFO ][logstash.agent           ] No persistent UUID file found. Generating new UUID &#123;:uuid=&gt;<span class="string">"8b530876-c089-43a6-a29f-885f55abf751"</span>, :path=&gt;<span class="string">"/u01/logstash/latest/data/uuid"</span>&#125;</span><br><span class="line">[2019-10-23T14:57:45,026][INFO ][org.reflections.Reflections] Reflections took 49 ms to scan 1 urls, producing 20 keys and 40 values </span><br><span class="line">[2019-10-23T14:57:45,632][WARN ][org.logstash.instrument.metrics.gauge.LazyDelegatingGauge][main] A gauge metric of an unknown <span class="built_in">type</span> (org.jruby.RubyArray) has been create <span class="keyword">for</span> key: cluster_uuids. This may result <span class="keyword">in</span> invalid serialization.  It is recommended to <span class="built_in">log</span> an issue to the responsible developer/development team.</span><br><span class="line">[2019-10-23T14:57:45,636][INFO ][logstash.javapipeline    ][main] Starting pipeline &#123;:pipeline_id=&gt;<span class="string">"main"</span>, <span class="string">"pipeline.workers"</span>=&gt;2, <span class="string">"pipeline.batch.size"</span>=&gt;125, <span class="string">"pipeline.batch.delay"</span>=&gt;50, <span class="string">"pipeline.max_inflight"</span>=&gt;250, :thread=&gt;<span class="string">"#&lt;Thread:0x6122f8fb run&gt;"</span>&#125;</span><br><span class="line">[2019-10-23T14:57:45,742][INFO ][logstash.javapipeline    ][main] Pipeline started &#123;<span class="string">"pipeline.id"</span>=&gt;<span class="string">"main"</span>&#125;</span><br><span class="line">The stdin plugin is now waiting <span class="keyword">for</span> input:</span><br><span class="line">[2019-10-23T14:57:45,894][INFO ][logstash.agent           ] Pipelines running &#123;:count=&gt;1, :running_pipelines=&gt;[:main], :non_running_pipelines=&gt;[]&#125;</span><br><span class="line">[2019-10-23T14:57:46,289][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;</span><br><span class="line">Hello</span><br><span class="line">/u01/logstash/logstash-7.4.0/vendor/bundle/jruby/2.5.0/gems/awesome_print-1.7.0/lib/awesome_print/formatters/base_formatter.rb:31: warning: constant ::Fixnum is deprecated</span><br><span class="line">&#123;</span><br><span class="line">      <span class="string">"@version"</span> =&gt; <span class="string">"1"</span>,</span><br><span class="line">       <span class="string">"message"</span> =&gt; <span class="string">"Hello"</span>,</span><br><span class="line">    <span class="string">"@timestamp"</span> =&gt; 2019-10-23T06:59:05.282Z,</span><br><span class="line">          <span class="string">"host"</span> =&gt; <span class="string">"ol75elk74s"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上在命令行终端直接输入Hello，可以看到输出的数据已被格式化，自动加上版本，时间戳以及hostname</p>
+<h3 id="Log采集插件Filebeat"><a href="#Log采集插件Filebeat" class="headerlink" title="Log采集插件Filebeat"></a>Log采集插件Filebeat</h3><p>filebeat是数据采集插件，可以把多个服务器上的多个log文件采集给Logstash或Elasticsearch</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ul>
+<li>也就是说filebeat采集到的数据可以发送给logstash，也可以不通过logstash直接发送给elasticsearch</li>
+</ul>
+</blockquote>
+<h4 id="Filebeat插件安装"><a href="#Filebeat插件安装" class="headerlink" title="Filebeat插件安装"></a>Filebeat插件安装</h4><p>安装过程不再累述<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /u01</span><br><span class="line">mkdir filebeat</span><br><span class="line">mv ~/Downloads/filebeat-7.4.0-linux-x86_64.tar.gz /u01/filebeat/</span><br><span class="line"><span class="built_in">cd</span> filebeat</span><br><span class="line">tar -xvf filebeat-7.4.0-linux-x86_64.tar.gz</span><br><span class="line">rm filebeat-7.4.0-linux-x86_64.tar.gz</span><br><span class="line">ln -s filebeat-7.4.0-linux-x86_64/ latest</span><br></pre></td></tr></table></figure></p>
+<p>环境变量写入配置文件/etc/bashrc</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#filebeat</span></span><br><span class="line"><span class="built_in">export</span> FILEBEAT_HOME=/u01/filebeat/latest</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$FILEBEAT_HOME</span>:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+<h4 id="准备测试数据"><a href="#准备测试数据" class="headerlink" title="准备测试数据"></a>准备测试数据</h4><p>官方测试数据下载链接 <a href="https://download.elastic.co/demos/logstash/gettingstarted/logstash-tutorial.log.gz" target="_blank" rel="noopener">Link</a>， 放到/u01/testdata目录下</p>
+<h4 id="设置配置文件filebeat-yml"><a href="#设置配置文件filebeat-yml" class="headerlink" title="设置配置文件filebeat.yml"></a>设置配置文件filebeat.yml</h4><p>将enable设为true，代表<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#=========================== Filebeat inputs =============================</span></span><br><span class="line"></span><br><span class="line">filebeat.inputs:</span><br><span class="line"></span><br><span class="line"><span class="comment"># Each - is an input. Most options can be set at the input level, so</span></span><br><span class="line"><span class="comment"># you can use different inputs for various configurations.</span></span><br><span class="line"><span class="comment"># Below are the input specific configurations.</span></span><br><span class="line"></span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Change to true to enable this input configuration.</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Paths that should be crawled and fetched. Glob based paths.</span></span><br><span class="line">  paths:</span><br><span class="line">    - /u01/testdata/*</span><br><span class="line">    <span class="comment">#- c:\programdata\elasticsearch\logs\*</span></span><br></pre></td></tr></table></figure></p>
+<p>##History<br>v1.0，2019.10.14~2019.10.24，初始版本</p>
+
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : Shen Peng <br>
+        
+        原文链接 : <a href="">http://yoursite.com/2019/10/22/通过ELK集中管理Windows-Server日志/</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">知识 & 情怀 | 二者兼得</p>
+  
+  <button id="reward-btn">
+    
+    <span>投食</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/wechat.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/alipay.png" alt="支付宝扫一扫, 向我投食">
+        <p class="qrcode-meta">支付宝扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Oracle-Linux/">
+              #Oracle Linux
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/Oracle-Linux-7-5/">
+              #Oracle Linux 7.5
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/blog/">
+              #blog
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/elasticsearch/">
+              #elasticsearch
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/logstasch/">
+              #logstasch
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/kibina/">
+              #kibina
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/2019/10/22/Oracle-Linux-7-5-安装NVM和Node-js/" target="_self">Oracle Linux 7.5 安装NVM和Node.js</a>
+      </div>
+    
+    
+  </nav>
+
+  
+    <a href="#comment" class="comment-anchor"></a>
+<div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+<div id="vcomments"></div>
+
+<script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "3OKDIg4e0wo2F4MdSnk6pURw-gzGzoHsz",
+      appKey: "HL7IxJ3hMAqxfnzCoBXPPdqL",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("3OKDIg4e0wo2F4MdSnk6pURw-gzGzoHsz", "HL7IxJ3hMAqxfnzCoBXPPdqL");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+    
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2018, 1, 10).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+  </body>
+
+</html>
