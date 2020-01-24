@@ -8,12 +8,12 @@
   
   
   
-  <title>Install Oracle Linux 7.5 for Oracle Database | Shen Peng&#39;s Blog</title>
+  <title>Install Oracle Linux 7.x for Oracle Database | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Linux,Oracle Linux,Oracle Linux 7.5,blog,">
+    <meta name="keywords" content="Linux,Oracle Linux,Oracle Linux 7.x,blog,">
   
 
   <script>
@@ -197,7 +197,7 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>Install Oracle Linux 7.5 for Oracle Database</span>
+    <span>Install Oracle Linux 7.x for Oracle Database</span>
   </h1>
   <div class="article-top-meta">
     <span>
@@ -250,6 +250,16 @@
 </tr>
 </tbody>
 </table>
+<h3 id="UEFI分区"><a href="#UEFI分区" class="headerlink" title="UEFI分区"></a>UEFI分区</h3><p>Legacy (MBR主引导记录分区格式+ Legacy启动模式): 无法支持2T以上的硬盘<br>UEFI (GPT分区表格式+ UEFI启动模式+ x64的系统): 只支持64位，支持图形化BIOS</p>
+<p>对于一些新的机器，例如HP G9已经转向UEFI<br><img src="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/./2020-01-03_15h49_01.png" alt="Alt text"></p>
+<h3 id="使用B140i的HP服务器需先加载驱动"><a href="#使用B140i的HP服务器需先加载驱动" class="headerlink" title="使用B140i的HP服务器需先加载驱动"></a>使用B140i的HP服务器需先加载驱动</h3><p>下载Redhat Linux 7.x相应的阵列卡驱动   <a href="https://support.hpe.com/hpsc/swd/public/detail?swItemId=MTX_439cda7afa7e41bd8124a7a5df#tab-history" target="_blank" rel="noopener">Link</a><br>解压后是一个dd后缀的文件，或者是一个img镜像文件；如果是dd文件，将其改为img；<br>通过ILO加载操作系统ISO，和驱动IMG，如图：</p>
+<p><img src="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/./Image-010.jpg" alt="Alt text"></p>
+<p>Linux镜像被加载为虚拟光驱，驱动镜像被加载为虚拟软盘。</p>
+<p>通过虚拟光驱引导后，在Linux安装界面按<code>E</code>键，在<code>linuxefi</code>那列加入<code>modprobe.blacklist=ahci inst.dd</code>，如下图</p>
+<p>按<code>Ctrl+X</code>继续启动，进入交互模式，按<code>r</code>键回车认出两个磁盘，sr0是光驱，sdc是驱动软盘。</p>
+<p><img src="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/./Image-016.jpg" alt="lt text"></p>
+<p>输入<code>2</code>回车选择驱动软盘，输入<code>1</code>回车选择扫描出来驱动安装包，输入<code>c</code>回车开始安装。</p>
+<p>安装完成后，再输入<code>c</code>回车回到操作系统安装</p>
 <h3 id="软件包选择"><a href="#软件包选择" class="headerlink" title="软件包选择"></a>软件包选择</h3><p>软件包的选择如图<br><img src="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/./ol75_ora192-2019-04-14-18-05-34.png" alt="Alt text"></p>
 <p>其余设置不再累述</p>
 <h2 id="操作系统安装后"><a href="#操作系统安装后" class="headerlink" title="操作系统安装后"></a>操作系统安装后</h2><h3 id="设置IP"><a href="#设置IP" class="headerlink" title="设置IP"></a>设置IP</h3><p>不再累述，略</p>
@@ -270,7 +280,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
 <p>将其中的ONBOOT参数值改为yes</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet</span><br><span class="line">PROXY_METHOD=none</span><br><span class="line">BROWSER_ONLY=no</span><br><span class="line">BOOTPROTO=dhcp</span><br><span class="line">DEFROUTE=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes</span><br><span class="line">IPV6_AUTOCONF=yes</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">IPV6_ADDR_GEN_MODE=stable-privacy</span><br><span class="line">NAME=ens33</span><br><span class="line">UUID=97236102-0158-4f7e-960b-222580b4922f</span><br><span class="line">DEVICE=ens33</span><br><span class="line">ONBOOT=yes</span><br></pre></td></tr></table></figure>
-<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p> v1.0 2019.07.04 初始版本<br> v1.1 2019.10.12 增加网卡自启动</p>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p> v1.0 2019.07.04 初始版本<br> v1.1 2019.10.12 增加网卡自启动<br> v1.2 2020.01.10 增加UEFI分区章节，增加HP B140i阵列卡章节</p>
 
     </div>
   </div>
@@ -348,8 +358,8 @@
           </span>
           
           <span class="span--tag">
-            <a href="/tags/Oracle-Linux-7-5/">
-              #Oracle Linux 7.5
+            <a href="/tags/Oracle-Linux-7-x/">
+              #Oracle Linux 7.x
             </a>
           </span>
           
