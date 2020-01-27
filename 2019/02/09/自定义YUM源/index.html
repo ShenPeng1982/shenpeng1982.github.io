@@ -223,7 +223,7 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Linux :  Oracle Enterprise Linux 5.5</p>
+      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Linux :  Oracle Enterprise Linux 5.x~7.x</p>
 <h2 id="设置Oracle-YUM源"><a href="#设置Oracle-YUM源" class="headerlink" title="设置Oracle YUM源"></a>设置Oracle YUM源</h2><h3 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h3><p><a href="http://public-yum.oracle.com/getting-started.html" target="_blank" rel="noopener">http://public-yum.oracle.com/getting-started.html</a></p>
 <h3 id="配置Oracle-YUM-Repository"><a href="#配置Oracle-YUM-Repository" class="headerlink" title="配置Oracle YUM Repository"></a>配置Oracle YUM Repository</h3><p>下载oracle yum repository文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/yum.repos.d</span><br><span class="line">wget https://yum.oracle.com/public-yum-el5.repo</span><br></pre></td></tr></table></figure></p>
 <blockquote>
@@ -237,6 +237,20 @@
 <h2 id="配置ISO作为本地YUM源"><a href="#配置ISO作为本地YUM源" class="headerlink" title="配置ISO作为本地YUM源"></a>配置ISO作为本地YUM源</h2><p>由于Oracle Linux自动生成的挂载点/media/Enterprise Linux  dvd  20100405中间有空格不是很方便，将cdrom挂载到/mnt/cdrom<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /mnt/cdrom</span><br><span class="line">mount /dev/cdrom /mnt/cdrom</span><br></pre></td></tr></table></figure></p>
 <p>在/etc/yum.repos.d中新建一个新的repository</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@rac1 yum.repos.d]<span class="comment"># vi dvd.repo </span></span><br><span class="line">[dvd]</span><br><span class="line">name=iso dvd</span><br><span class="line">baseurl=file:///mnt/cdrom</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure>
+<h2 id="配置阿里源"><a href="#配置阿里源" class="headerlink" title="配置阿里源"></a>配置阿里源</h2><p>请根据不同的版本选择相应的源， 下载阿里源文件到<code>/etc/yum.repos.d</code></p>
+<p>CentOS 5<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo</span><br></pre></td></tr></table></figure></p>
+<p>CentOS 6<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo</span><br></pre></td></tr></table></figure></p>
+<p>CentOS 7<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo</span><br></pre></td></tr></table></figure></p>
+<p>EPEL(RHEL 5)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-5.repo</span><br></pre></td></tr></table></figure></p>
+<p>EPEL(RHEL 6)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-6.repo</span><br></pre></td></tr></table></figure></p>
+<p>EPEL(RHEL 7)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ul>
+<li>EPEL源：<br>EPEL (Extra Packages for Enterprise Linux)是基于Fedora的一个项目，为“红帽系”的操作系统提供额外的软件包，适用于RHEL、CentOS和Scientific Linux</li>
+</ul>
+</blockquote>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p> v1.0 2019.02.09 初始版本<br> v1.1 2020.01.27 增加阿里源</p>
 
     </div>
   </div>
