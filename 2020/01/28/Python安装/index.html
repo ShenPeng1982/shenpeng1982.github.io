@@ -8,12 +8,12 @@
   
   
   
-  <title>文章索引 | Shen Peng&#39;s Blog</title>
+  <title>Python安装 | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Hexo, theme-bmw">
+    <meta name="keywords" content="Linux,python,">
   
 
   <script>
@@ -197,17 +197,17 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>文章索引</span>
+    <span>Python安装</span>
   </h1>
   <div class="article-top-meta">
     <span>
       发布 : 
-      2020-01-24
+      2020-01-28
     </span>
     
     
       <span>
-        浏览 : <span class="article-timer" data-identity="blog-index"></span>
+        浏览 : <span class="article-timer" data-identity="Python安装"></span>
       </span>
     
   </div>
@@ -216,9 +216,45 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><p><a href="https://shenpeng1982.github.io/2019/02/09/%E8%87%AA%E5%AE%9A%E4%B9%89YUM%E6%BA%90/" target="_blank" rel="noopener">自定义YUM源</a><br><a href="https://shenpeng1982.github.io/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/" target="_blank" rel="noopener">Oracle Linux 7.x安装</a></p>
-<h2 id="Oracle"><a href="#Oracle" class="headerlink" title="Oracle"></a>Oracle</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><a href="https://shenpeng1982.github.io/2019/07/05/Oracle-18c-XE-RPM-Installation-on-Oracle-Linux-7-5/" target="_blank" rel="noopener">Oracle 18c XE</a><br><a href="https://shenpeng1982.github.io/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/" target="_blank" rel="noopener">Oracle 19c</a></p>
-<h3 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h3><p>解决Linux下sqlplus乱码问题</p>
+      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Oracle Linux 7.x<br>Ubuntu 18.04<br>Python 3.6.10, 3.7.3</p>
+<h2 id="直接安装Python"><a href="#直接安装Python" class="headerlink" title="直接安装Python"></a>直接安装Python</h2><p>有的时候通过yum安装版本太旧，需要下载安装包，下载 <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">Link</a><br>安装依赖环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel</span><br></pre></td></tr></table></figure>
+<p>为python3创建安装目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /usr/<span class="built_in">local</span>/python3</span><br></pre></td></tr></table></figure></p>
+<p>编译</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>在<code>/usr/bin/</code>下创建一个软链接<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/<span class="built_in">local</span>/python3/bin/python3 /usr/bin/python3</span><br></pre></td></tr></table></figure></p>
+<h2 id="通过Anaconda3安装"><a href="#通过Anaconda3安装" class="headerlink" title="通过Anaconda3安装"></a>通过Anaconda3安装</h2><p>anaconda3下载地址见 <a href="https://www.anaconda.com/distribution/#download-section" target="_blank" rel="noopener">Link</a><br>anaconda3下载下来是一个以<code>.sh</code>结尾的文件<br>通过<code>bash</code>命令来安装anaconda，阅读版权说明后一路<code>yes</code>完成安装，anaconda默认安装在 <code>~/anaconda3</code>下面<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Anaconda3-2019.03-Linux-x86_64.sh</span><br></pre></td></tr></table></figure></p>
+<p>安装完anaconda后会在终端提示符前面自动加上<code>(base)</code>，看上去不是很舒服，如果用不上conda，直接禁止conda在用户登录时默认启动，这样就不会加上<code>(base)</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(base) dba@ubuntu:~$</span><br></pre></td></tr></table></figure></p>
+<p>通过在 <code>~/.bashrc</code>里面加上<code>conda deactivate</code>默认关闭conda</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda activate</span><br></pre></td></tr></table></figure>
+<p>需要用到时再<code>conda activate</code>启动conda</p>
+<h3 id="安装Jupyter-Notebook"><a href="#安装Jupyter-Notebook" class="headerlink" title="安装Jupyter Notebook"></a>安装Jupyter Notebook</h3><p>在anaconda基础上安装jupyter notebook非常简单，如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install jupyter notebook</span><br></pre></td></tr></table></figure></p>
+<p>在conda启动的基础上，在终端输入<code>jupyter notebook</code>会通过浏览器打开连接到jupyter notebook的服务，默认端口8888</p>
+<h4 id="访问设置"><a href="#访问设置" class="headerlink" title="访问设置"></a>访问设置</h4><p>但现在只能在本机访问jupyter notebook，如需要通过任意外部IP访问，通过<code>jupyter notebook --generate-config</code>在<code>~/.jupyter</code>生成配置文件<code>jupyter_notebook_config.py</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(base) dba@ubuntu:~/anaconda3$ jupyter notebook --generate-config</span><br><span class="line">Writing default config to: /home/dba/.jupyter/jupyter_notebook_config.py</span><br></pre></td></tr></table></figure></p>
+<p>在配置文件中找到以下参数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#c.NotebookApp.ip = 'localhost'    # localhost代表只能通过本机访问</span></span><br></pre></td></tr></table></figure></p>
+<p>将其改为如下所示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.allow_remote_access = True      <span class="comment"># 允许远程访问</span></span><br><span class="line">c.NotebookApp.ip = <span class="string">'*'</span>      <span class="comment"># *代表所有IP都能访问</span></span><br><span class="line">c.NotebookApp.port =8888    <span class="comment"># 自定义端口，默认是8888</span></span><br></pre></td></tr></table></figure></p>
+<p>生成密码和密钥(token)，自己输入的密码要记得，登陆的时候需要用到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook password</span><br></pre></td></tr></table></figure>
+<p>生成的密钥文件位于<code>/home/dba/.jupyter/jupyter_notebook_config.json</code><br>密钥长这个样子</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(base) dba@ubuntu:~$ cat /home/dba/.jupyter/jupyter_notebook_config.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"NotebookApp"</span>: &#123;</span><br><span class="line">    <span class="string">"password"</span>: <span class="string">"sha1:4a4c5ebcc885:ad77b32f224d75a0816..."</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>再次启动jupyter notebook，按照提示输入密码后登入</p>
+<h4 id="SSL加密-TBD"><a href="#SSL加密-TBD" class="headerlink" title="SSL加密(TBD)"></a>SSL加密(TBD)</h4><p>SSL加密完成后Jupyter Notebook需要通过https访问</p>
+<p>生成证书<code>~/.jupyter/mycert.pem</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.jupyter</span><br><span class="line">openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem</span><br></pre></td></tr></table></figure></p>
+<p>编辑配置文件<code>~/.jupyter/jupyter_notebook_config.py</code> , 参数<code>c.NotebookApp.certfile</code>指向生成的证书</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.certfile = <span class="string">'/home/dba/.jupyter/mycert.pem'</span></span><br></pre></td></tr></table></figure>
+<p>重启Jupyter Notebook</p>
+<h3 id="同时安装Python2"><a href="#同时安装Python2" class="headerlink" title="同时安装Python2"></a>同时安装Python2</h3><p>Anaconda默认安装的是python3，但有的时候还是需要用到python2，因此我们需要手动安装python2.7，如下创建一个名为py27的python2.7虚拟环境<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create -n py27 python=2.7      <span class="comment">#同时安装python2.7，py27是自定义的名字</span></span><br></pre></td></tr></table></figure></p>
+<p>安装完之后，在terminal里面可以通过<code>conda activate py27</code>或<code>conda deactivate</code>来激活和禁用python2.7虚拟环境；<br>可以看到，激活后提示符变为了之前自定义的名字，如下，本例中是<code>py27</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(base) dba@ubuntu:~$ conda activate py27</span><br><span class="line">(py27) dba@ubuntu:~$ python</span><br><span class="line">Python 2.7.17 |Anaconda, Inc.| (default, Oct 21 2019, 19:04:46) </span><br><span class="line">[GCC 7.3.0] on linux2</span><br><span class="line">Type <span class="string">"help"</span>, <span class="string">"copyright"</span>, <span class="string">"credits"</span> or <span class="string">"license"</span> <span class="keyword">for</span> more information.</span><br></pre></td></tr></table></figure></p>
+<h3 id="设置Jupyter-Notebook支持Python2"><a href="#设置Jupyter-Notebook支持Python2" class="headerlink" title="设置Jupyter Notebook支持Python2"></a>设置Jupyter Notebook支持Python2</h3><p>python2.7已经安装，下面的工作是使Jupyter Notebook能够调用v<br>首先在python2.7环境下安装ipykernal，可以通过<code>conda list</code>查看该虚拟环境下安装的软件包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(py27) dba@ubuntu:~$ conda install ipykernel</span><br></pre></td></tr></table></figure>
+<p>为Jupyter Notebook添加一个Python2.7内核</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(py27) dba@ubuntu:~$ python -m ipykernel install --user</span><br><span class="line">Installed kernelspec python2 <span class="keyword">in</span> /home/dba/.<span class="built_in">local</span>/share/jupyter/kernels/python2</span><br></pre></td></tr></table></figure>
+<p>如图所示<br><img src="/2020/01/28/Python安装/./Image-004.jpg" alt="Alt text"></p>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><h4 id="HTTP-Server"><a href="#HTTP-Server" class="headerlink" title="HTTP Server"></a>HTTP Server</h4><p>临时启用http server，将当前目录提供给用户下载</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -m http.server <span class="number">8000</span>    <span class="comment">#8000为自定义端口号</span></span><br></pre></td></tr></table></figure>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>v1.0，2019.11.25~2019.12.13，初始版本<br>v.1.1，2020.01.28，添加直接安装python3</p>
 
     </div>
   </div>
@@ -230,7 +266,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2020/01/24/blog-index/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2020/01/28/Python安装/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -287,6 +323,21 @@
     <div class="article-meta pull-left">
       <span>
         
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Linux/">
+              #Linux
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/python/">
+              #python
+            </a>
+          </span>
+          
+        
       </span>
     </div>
     <div class="article-meta pull-right">
@@ -307,15 +358,9 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/10/22/通过ELK集中管理Windows-Server日志/" target="_self">通过ELK集中管理Windows Server日志</a>
+        <a href="/2020/01/24/blog-index/" target="_self">文章索引</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2020/01/28/Python安装/" target="_self">Python安装</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
