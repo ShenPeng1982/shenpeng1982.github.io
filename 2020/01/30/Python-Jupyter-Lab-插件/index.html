@@ -8,12 +8,12 @@
   
   
   
-  <title>Oracle Linux 7.5 安装NVM和Node.js | Shen Peng&#39;s Blog</title>
+  <title>Python - Jupyter Lab - 插件 | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Node.js,Oracle Linux,Oracle Linux 7.5,blog,Node.js,Node.js 12.13.0,NVM,NVM 0.35,">
+    <meta name="keywords" content="Hexo, theme-bmw">
   
 
   <script>
@@ -197,24 +197,17 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>Oracle Linux 7.5 安装NVM和Node.js</span>
+    <span>Python - Jupyter Lab - 插件</span>
   </h1>
   <div class="article-top-meta">
     <span>
       发布 : 
-      2019-10-22
+      2020-01-30
     </span>
     
-      <span>
-        分类 : 
-          <a href="/categories/Node-js/">
-            Node.js
-          </a>
-      </span>
-    
     
       <span>
-        浏览 : <span class="article-timer" data-identity="Oracle-Linux-7-5-安装NVM和Node-js"></span>
+        浏览 : <span class="article-timer" data-identity="Python-Jupyter-Lab-插件"></span>
       </span>
     
   </div>
@@ -223,52 +216,7 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Oracle Linux 7.5<br>Git 1.8.3.1（Oracle Linux 7自带）<br>NVM 0.35<br>Node.js 12.13.0</p>
-<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>NVM=Node Version Manager，NVM依赖于Git，Oracle Linux 7.5自带Git，建议使用NVM安装和管理node.js</p>
-<h2 id="安装NVM"><a href="#安装NVM" class="headerlink" title="安装NVM"></a>安装NVM</h2><h3 id="自动安装"><a href="#自动安装" class="headerlink" title="自动安装"></a>自动安装</h3><p>下载及文档见 <a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noopener">Link</a></p>
-<p>安装运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash</span><br></pre></td></tr></table></figure></p>
-<p>或</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash</span><br></pre></td></tr></table></figure>
-<p>安装命令运行如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash</span></span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--100 13527  100 13527    0     0  17504      0 --:--:-- --:--:-- --:--:-- 17522</span><br><span class="line">=&gt; Downloading nvm from git to <span class="string">'/root/.nvm'</span></span><br><span class="line">=&gt; Cloning into <span class="string">'/root/.nvm'</span>...</span><br><span class="line">remote: Enumerating objects: 286, <span class="keyword">done</span>.</span><br><span class="line">remote: Counting objects: 100% (286/286), <span class="keyword">done</span>.</span><br><span class="line">remote: Compressing objects: 100% (256/256), <span class="keyword">done</span>.</span><br><span class="line">remote: Total 286 (delta 34), reused 93 (delta 17), pack-reused 0</span><br><span class="line">Receiving objects: 100% (286/286), 146.90 KiB | 7.00 KiB/s, <span class="keyword">done</span>.</span><br><span class="line">Resolving deltas: 100% (34/34), <span class="keyword">done</span>.</span><br><span class="line">=&gt; Compressing and cleaning up git repository</span><br><span class="line"></span><br><span class="line">=&gt; Appending nvm <span class="built_in">source</span> string to /root/.bashrc</span><br><span class="line">=&gt; Appending bash_completion <span class="built_in">source</span> string to /root/.bashrc</span><br><span class="line">=&gt; Close and reopen your terminal to start using nvm or run the following to use it now:</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> NVM_DIR=<span class="string">"<span class="variable">$HOME</span>/.nvm"</span></span><br><span class="line">[ -s <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span> ] &amp;&amp; \. <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span>  <span class="comment"># This loads nvm</span></span><br><span class="line">[ -s <span class="string">"<span class="variable">$NVM_DIR</span>/bash_completion"</span> ] &amp;&amp; \. <span class="string">"<span class="variable">$NVM_DIR</span>/bash_completion"</span>  <span class="comment"># This loads nvm bash_completion</span></span><br></pre></td></tr></table></figure></p>
-<p>查看版本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># nvm --version</span></span><br><span class="line">0.35.0</span><br></pre></td></tr></table></figure>
-<h3 id="通过git安装"><a href="#通过git安装" class="headerlink" title="通过git安装"></a>通过git安装</h3><p>下载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/nvm-sh/nvm.git .nvm</span><br></pre></td></tr></table></figure></p>
-<p>激活nvm<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.nvm</span><br><span class="line">. nvm.sh</span><br></pre></td></tr></table></figure></p>
-<h2 id="NVM环境变量"><a href="#NVM环境变量" class="headerlink" title="NVM环境变量"></a>NVM环境变量</h2><p>如果是以root用户安装，默认被修改的配置文件如下表</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">操作系统</th>
-<th style="text-align:left">运行的用户</th>
-<th style="text-align:left">相对安装路径</th>
-<th style="text-align:left">实际安装路径</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">Oracle Linux 7.5</td>
-<td style="text-align:left">root</td>
-<td style="text-align:left">~/.nvm</td>
-<td style="text-align:left">/root/.nvm</td>
-<td style="text-align:left">安装目录</td>
-</tr>
-<tr>
-<td style="text-align:left">Oracle Linux 7.5</td>
-<td style="text-align:left">root</td>
-<td style="text-align:left">~/.bash_profile, ~/.zshrc, ~/.profile, 或 ~/.bashrc</td>
-<td style="text-align:left">/root/.bashrc</td>
-<td style="text-align:left">配置文件</td>
-</tr>
-</tbody>
-</table>
-<p>~/.bashrc即/root/.bashrc会被添加如下环境变量<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NVM_DIR=<span class="string">"<span class="variable">$HOME</span>/.nvm"</span></span><br><span class="line">[ -s <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span> ] &amp;&amp; \. <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span>  <span class="comment"># This loads nvm</span></span><br><span class="line">[ -s <span class="string">"<span class="variable">$NVM_DIR</span>/bash_completion"</span> ] &amp;&amp; \. <span class="string">"<span class="variable">$NVM_DIR</span>/bash_completion"</span>  <span class="comment"># This loads nvm bash_completion</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>查看所有可用的node.js版本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls-remote</span><br></pre></td></tr></table></figure></p>
-<p>安装最新版的node.js<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm install node</span><br></pre></td></tr></table></figure></p>
-<p>安装指定版本的node.js<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm install 12.13.0</span><br></pre></td></tr></table></figure></p>
-<p>查看某版本node.js的安装目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm <span class="built_in">which</span> 12.13.0</span><br></pre></td></tr></table></figure></p>
-<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>v1.0，2019.10.22，初始版本<br>v1.1，2020.01.30，添加git安装方式</p>
-
+      
     </div>
   </div>
   
@@ -279,7 +227,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2019/10/22/Oracle-Linux-7-5-安装NVM和Node-js/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2020/01/30/Python-Jupyter-Lab-插件/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -336,51 +284,6 @@
     <div class="article-meta pull-left">
       <span>
         
-          <i class="iconfont icon-06tags"></i>标签: 
-          
-          <span class="span--tag">
-            <a href="/tags/Oracle-Linux/">
-              #Oracle Linux
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/Oracle-Linux-7-5/">
-              #Oracle Linux 7.5
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/blog/">
-              #blog
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/Node-js/">
-              #Node.js
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/Node-js-12-13-0/">
-              #Node.js 12.13.0
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/NVM/">
-              #NVM
-            </a>
-          </span>
-          
-          <span class="span--tag">
-            <a href="/tags/NVM-0-35/">
-              #NVM 0.35
-            </a>
-          </span>
-          
-        
       </span>
     </div>
     <div class="article-meta pull-right">
@@ -401,15 +304,9 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/10/17/Oracle-Linux-7-5-安装Node-js-10-16-3/" target="_self">Oracle Linux 7.5 安装Node.js 10.16.3</a>
+        <a href="/2020/01/29/Python-工具/" target="_self">Python - 工具</a>
       </div>
     
-    
-      <div class="nav-next">
-        下一篇:
-        <a href="/2019/10/22/通过ELK集中管理Windows-Server日志/" target="_self">通过ELK集中管理Windows Server日志</a>
-        <i class="iconfont icon-next"></i>
-      </div>
     
   </nav>
 
