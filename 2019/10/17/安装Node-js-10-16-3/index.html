@@ -8,12 +8,12 @@
   
   
   
-  <title>Oracle 18c XE RPM Installation on Oracle Linux 7.5 | Shen Peng&#39;s Blog</title>
+  <title>安装Node.js 10.16.3 | Shen Peng&#39;s Blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Oracle,Oracle Linux,Oracle Linux 7.5,Oracle,blog,Oracle Express Edition,Oracle Express Edition 18c,">
+    <meta name="keywords" content="Node.js,Oracle Linux,Oracle Linux 7.5,blog,Node.js,Node.js 10.16.3,">
   
 
   <script>
@@ -197,24 +197,24 @@
 
 <div class="post">
   <h1 class="article-title">
-    <span>Oracle 18c XE RPM Installation on Oracle Linux 7.5</span>
+    <span>安装Node.js 10.16.3</span>
   </h1>
   <div class="article-top-meta">
     <span>
       发布 : 
-      2019-07-05
+      2019-10-17
     </span>
     
       <span>
         分类 : 
-          <a href="/categories/Oracle/">
-            Oracle
+          <a href="/categories/Node-js/">
+            Node.js
           </a>
       </span>
     
     
       <span>
-        浏览 : <span class="article-timer" data-identity="Oracle-18c-XE-RPM-Installation-on-Oracle-Linux-7-5"></span>
+        浏览 : <span class="article-timer" data-identity="安装Node-js-10-16-3"></span>
       </span>
     
   </div>
@@ -223,29 +223,30 @@
 
   <div class="article-content">
     <div class="markdown-body">
-      <p>通过rpm包来安装oracle express非常方便，有点一键安装的感觉。</p>
-<h2 id="XE版的限制"><a href="#XE版的限制" class="headerlink" title="XE版的限制"></a>XE版的限制</h2><ul>
-<li>3 Pluggable Databases</li>
-<li>2 CPUs for foreground processes</li>
-<li>2GB of RAM (SGA and PGA combined)</li>
-<li>12GB of user data on disk (irrespective of compression factor)<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2></li>
-<li>Oracle 18c 18.4 64bit</li>
-<li>Oracle Linux 64bit</li>
-<li>VMware Workstation Pro 15<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2>现阶段，oracle express 18c已经提供Windows和Linux的版本下载。</li>
-<li>Oracle Express 18c RPM: <a href="https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html" target="_blank" rel="noopener">下载地址</a><h2 id="安装和配置Oracle-Linux-7"><a href="#安装和配置Oracle-Linux-7" class="headerlink" title="安装和配置Oracle Linux 7"></a>安装和配置Oracle Linux 7</h2>Oracle Linux安装见 <a href="https://shenpeng1982.github.io/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/" target="_blank" rel="noopener">Oracle Linux 7安装指南</a></li>
-</ul>
-<h2 id="安装Oracle-Express-18c"><a href="#安装Oracle-Express-18c" class="headerlink" title="安装Oracle Express 18c"></a>安装Oracle Express 18c</h2><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>Oracle已经帮我们准备一个配置必要条件用的软件包oracle-database-preinstall-18c，包括了安装必要的软件包，创建用户，设置参数等等工作，很方便。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y oracle-database-preinstall-18c</span><br></pre></td></tr></table></figure></p>
-<h3 id="Oracle软件安装"><a href="#Oracle软件安装" class="headerlink" title="Oracle软件安装"></a>Oracle软件安装</h3><p>本例中，RPM包下载在/software中，用yum -y localinstall进行本地软件安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y localinstall oracle-database-xe-18c-1.0-1.x86_64.rpm</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/07/05/Oracle-18c-XE-RPM-Installation-on-Oracle-Linux-7-5/./pic_20181106_001.jpg" alt="Alt text"></p>
-<h3 id="Oracle数据库创建"><a href="#Oracle数据库创建" class="headerlink" title="Oracle数据库创建"></a>Oracle数据库创建</h3><h4 id="Oracle环境变量配置"><a href="#Oracle环境变量配置" class="headerlink" title="Oracle环境变量配置"></a>Oracle环境变量配置</h4><p>可以通过/etc/sysconfig/oracle-xe-18c.conf进行设置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@ora183 ~]# cat /etc/sysconfig/oracle-xe-18c.conf</span><br><span class="line">#This is a configuration file to setup the Oracle Database. </span><br><span class="line">#It is used when running &apos;/etc/init.d/oracle-xe-18c configure&apos;.</span><br><span class="line"></span><br><span class="line"># LISTENER PORT used Database listener, Leave empty for automatic port assignment</span><br><span class="line">LISTENER_PORT=</span><br><span class="line"></span><br><span class="line"># EM_EXPRESS_PORT Oracle EM Express URL port</span><br><span class="line">EM_EXPRESS_PORT=5500</span><br><span class="line"></span><br><span class="line"># Character set of the database</span><br><span class="line">CHARSET=AL32UTF8</span><br><span class="line"></span><br><span class="line"># Database file directory</span><br><span class="line"># If not specified, database files are stored under Oracle base/oradata</span><br><span class="line">DBFILE_DEST=</span><br><span class="line"></span><br><span class="line"># SKIP Validations, memory, space</span><br><span class="line">SKIP_VALIDATIONS=false</span><br></pre></td></tr></table></figure>
-<h4 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h4><p>开始创建<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/oracle-xe-18c configure</span><br></pre></td></tr></table></figure></p>
+      <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Oracle Linux 7.5<br>Node.js 10.16.3 (LTS)</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>下载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://nodejs.org/dist/v10.16.3/node-v10.16.3-linux-x64.tar.xz</span><br></pre></td></tr></table></figure></p>
+<p>解压缩</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xz -d node-v10.16.3-linux-x64.tar.xz</span><br><span class="line">tar -xvf node-v10.16.3-linux-x64.tar</span><br></pre></td></tr></table></figure>
+<p>挪到安装目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /u01/nodejs</span><br><span class="line">mv node-v10.16.3-linux-x64 /u01/nodejs</span><br></pre></td></tr></table></figure>
+<p>创建软链接<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /u01/nodejs</span><br><span class="line">ln -s node-v10.16.3-linux-x64 latest</span><br></pre></td></tr></table></figure></p>
+<p>在/etc/profile中设置环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NODEJS_HOME=/u01/nodejs/latest</span><br><span class="line"></span><br><span class="line">PATH=<span class="variable">$NODEJS_HOME</span>/bin:<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$JRE_HOME</span>/bin:<span class="variable">$HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>注意：</strong>别忘了在/etc/hosts里面设置IP，否则会出现如下报错<br><img src="/2019/07/05/Oracle-18c-XE-RPM-Installation-on-Oracle-Linux-7-5/./pic_20181106_002.jpg" alt="Alt text"></p>
+<p><strong>注意:</strong></p>
+<ul>
+<li>/etc/bashrc中的内容，每个用户登陆时都会执行</li>
+</ul>
 </blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">[root@ora183 ~]<span class="comment"># /etc/init.d/oracle-xe-18c configure</span></span><br><span class="line">Specify a password to be used <span class="keyword">for</span> database accounts. Oracle recommends that the password entered should be at least 8 characters <span class="keyword">in</span> length, contain at least 1 uppercase character, 1 lower <span class="keyword">case</span> character and 1 digit [0-9]. Note that the same password will be used <span class="keyword">for</span> SYS, SYSTEM and PDBADMIN accounts:</span><br><span class="line">Confirm the password:</span><br><span class="line">Configuring Oracle Listener.</span><br><span class="line">Listener configuration succeeded.</span><br><span class="line">Configuring Oracle Database XE.</span><br><span class="line">Enter SYS user password: </span><br><span class="line">**********</span><br><span class="line">Enter SYSTEM user password: </span><br><span class="line">**********</span><br><span class="line">Enter PDBADMIN User Password: </span><br><span class="line">********</span><br><span class="line">Prepare <span class="keyword">for</span> db operation</span><br><span class="line">7% complete</span><br><span class="line">Copying database files</span><br><span class="line">29% complete</span><br><span class="line">Creating and starting Oracle instance</span><br><span class="line">30% complete</span><br><span class="line">31% complete</span><br><span class="line">34% complete</span><br><span class="line">38% complete</span><br><span class="line">41% complete</span><br><span class="line">43% complete</span><br><span class="line">Completing Database Creation</span><br><span class="line">47% complete</span><br><span class="line">50% complete</span><br><span class="line">Creating Pluggable Databases</span><br><span class="line">54% complete</span><br><span class="line">71% complete</span><br><span class="line">Executing Post Configuration Actions</span><br><span class="line">93% complete</span><br><span class="line">Running Custom Scripts</span><br><span class="line">100% complete</span><br><span class="line">Database creation complete. For details check the logfiles at:</span><br><span class="line"> /opt/oracle/cfgtoollogs/dbca/XE.</span><br><span class="line">Database Information:</span><br><span class="line">Global Database Name:XE</span><br><span class="line">System Identifier(SID):XE</span><br><span class="line">Look at the <span class="built_in">log</span> file <span class="string">"/opt/oracle/cfgtoollogs/dbca/XE/XE.log"</span> <span class="keyword">for</span> further details.</span><br><span class="line"></span><br><span class="line">Connect to Oracle Database using one of the connect strings:</span><br><span class="line">     Pluggable database: ora183.oracle.com/XEPDB1</span><br><span class="line">     Multitenant container database: ora183.oracle.com</span><br><span class="line">Use https://localhost:5500/em to access Oracle Enterprise Manager <span class="keyword">for</span> Oracle Database XE</span><br></pre></td></tr></table></figure>
-<h4 id="复制环境变量"><a href="#复制环境变量" class="headerlink" title="复制环境变量"></a>复制环境变量</h4><p>从配置文件/etc/init.d/oracle-xe-18c中复制环境变量到~/.bash_profile</p>
-<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>v1.0 2018.11.06<br>v1.1 2019.07.02<br>v1.2 2019.07.04</p>
+<p>测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@ol75elk74s ~]<span class="comment"># node -v</span></span><br><span class="line">v10.16.3</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意:</strong></p>
+<ul>
+<li>也可以用nvm安装和管理node.js的版本，见 <a href="https://shenpeng1982.github.io/2019/10/22/Oracle-Linux-7-5-%E5%AE%89%E8%A3%85NVM%E5%92%8CNode-js/" target="_blank" rel="noopener">Link</a></li>
+</ul>
+</blockquote>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>v1.0，2019.10.17，初始版本<br>v1.1，2019.10.22，增加nvm的Link</p>
 
     </div>
   </div>
@@ -257,7 +258,7 @@
         
           本文作者 : Shen Peng <br>
         
-        原文链接 : <a href="">http://yoursite.com/2019/07/05/Oracle-18c-XE-RPM-Installation-on-Oracle-Linux-7-5/</a><br>
+        原文链接 : <a href="">http://yoursite.com/2019/10/17/安装Node-js-10-16-3/</a><br>
         版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
@@ -329,26 +330,20 @@
           </span>
           
           <span class="span--tag">
-            <a href="/tags/Oracle/">
-              #Oracle
-            </a>
-          </span>
-          
-          <span class="span--tag">
             <a href="/tags/blog/">
               #blog
             </a>
           </span>
           
           <span class="span--tag">
-            <a href="/tags/Oracle-Express-Edition/">
-              #Oracle Express Edition
+            <a href="/tags/Node-js/">
+              #Node.js
             </a>
           </span>
           
           <span class="span--tag">
-            <a href="/tags/Oracle-Express-Edition-18c/">
-              #Oracle Express Edition 18c
+            <a href="/tags/Node-js-10-16-3/">
+              #Node.js 10.16.3
             </a>
           </span>
           
@@ -373,13 +368,13 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="/2019/07/05/Install-Oracle-Linux-7-5-for-Oracle-Database/" target="_self">Install Oracle Linux 7.x for Oracle Database</a>
+        <a href="/2019/07/05/Oracle-18c-XE-RPM-Installation-on-Oracle-Linux-7-5/" target="_self">Oracle 18c XE RPM Installation on Oracle Linux 7.5</a>
       </div>
     
     
       <div class="nav-next">
         下一篇:
-        <a href="/2019/10/17/安装Node-js-10-16-3/" target="_self">安装Node.js 10.16.3</a>
+        <a href="/2019/10/22/安装NVM和Node-js/" target="_self">安装NVM和Node.js</a>
         <i class="iconfont icon-next"></i>
       </div>
     
