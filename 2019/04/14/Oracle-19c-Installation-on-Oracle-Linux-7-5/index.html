@@ -225,7 +225,7 @@
     <div class="markdown-body">
       <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Oracle 19c是12c的长支持版本，支持到2023年，扩展支持到2026年</p>
 <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>实验环境本文基于Oracle Linux 7.5搭建<br> Oracle Linux 7.5<br> Oracle Database 19.2.0.0<br> Oracle Database 19.3.0.0</p>
-<p>##Oracle Linux 7.5安装<br>没有什么特殊的地方，不再累述<br>只有下面几个要注意的点</p>
+<h2 id="Oracle-Linux-7-5安装"><a href="#Oracle-Linux-7-5安装" class="headerlink" title="Oracle Linux 7.5安装"></a>Oracle Linux 7.5安装</h2><p>没有什么特殊的地方，不再累述<br>只有下面几个要注意的点</p>
 <h3 id="关闭KDUMP"><a href="#关闭KDUMP" class="headerlink" title="关闭KDUMP"></a>关闭KDUMP</h3><h3 id="关闭SECURITY-POLICY"><a href="#关闭SECURITY-POLICY" class="headerlink" title="关闭SECURITY POLICY"></a>关闭SECURITY POLICY</h3><h3 id="软件包的选择"><a href="#软件包的选择" class="headerlink" title="软件包的选择"></a>软件包的选择</h3><p><img src="/2019/04/14/Oracle-19c-Installation-on-Oracle-Linux-7-5/./ol75_ora192-2019-04-14-18-05-34.png" alt="Alt text"></p>
 <h3 id="关闭SELINUX"><a href="#关闭SELINUX" class="headerlink" title="关闭SELINUX"></a>关闭SELINUX</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
 <p>将SELINUX置为permissive<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=permissive</span><br></pre></td></tr></table></figure></p>
